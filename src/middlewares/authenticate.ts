@@ -10,7 +10,6 @@ export interface decodeData {
   userType : string
 }
 
-
 function authenticate(req : Request, res : Response, next : NextFunction)
 {
     const token = req.cookies;

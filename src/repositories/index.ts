@@ -1,5 +1,6 @@
 import { PoolClient } from 'pg';
 import pool from '../config/db';
+import { LoginData } from '../models/interfaces';
 
 export class Repository
 {
@@ -46,9 +47,18 @@ export class Repository
             'text':'',
             'values':[]
         }
+        const res = await client.query(query);
+        return { 'error' : null };
+    }
+
+    public async login(client : PoolClient, _email : string)
+    {
+        const query = {
+            'text':'SELECT id, email, password, username, is_admin FROM usuarios WHERE email = $1',
+            'values':[_email]
+        }
 
         const res = await client.query(query);
-
-        return { 'error' : null }
+        return {'userID': res.rows[0].id, 'password': res.rows[0].password, 'userType': res.rows[0].is_admin, 'userEmail': res.rows[0].email, 'userName': res.rows[0].username, 'error': null};
     }
 }
