@@ -1,0 +1,41 @@
+{
+  "name": "desafio-typescript",
+  "version": "1.0.0",
+  "description": "<div align=\"center\">\r \t<a  href=\"https://www.alphaedtech.org.br/\">\r \t    <img  src=\"https://user-images.githubusercontent.com/79182711/187928980-1c1c834c-d92c-4565-b7b6-9cf5b644873e.png\"  alt=\"Alpha EdTech\"  title=\"Alpha EdTech\"  width=\"250\" />\r \t</a>\r \t<h3>\r \t\tDesafio TypeScript da\r \t\t<a  href=\"https://www.alphaedtech.org.br/\">\r \t\tAlpha EdTech\r \t\t</a>\r \t</h3>\r </div>",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "npx tsc",
+    "start:dev": "nodemon"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/janascher/desafio-typescript.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/janascher/desafio-typescript/issues"
+  },
+  "homepage": "https://github.com/janascher/desafio-typescript#readme",
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "@types/cookie-parser": "^1.4.3",
+    "@types/express": "^4.17.14",
+    "@types/jsonwebtoken": "^8.5.9",
+    "@types/node": "^18.11.9",
+    "@types/pg": "^8.6.5",
+    "nodemon": "^2.0.20",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.3"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^8.5.1",
+    "pg": "^8.8.0"
+  }
+}
