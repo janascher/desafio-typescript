@@ -10,30 +10,30 @@ export interface decodeData {
   userType : string
 }
 
+
 function authenticate(req : Request, res : Response, next : NextFunction)
 {
-    // const token = req.cookies;
-    // if (!token)
-    // {
-    //     return res.status(401).json({ message: 'Para prosseguir, faça login novamente.' });
-    // };
+    const token = req.cookies;
+    if (!token)
+    {
+        return res.status(401).json({ message: 'Para prosseguir, faça login novamente.' });
+    };
     
-    // if (process.env.JWT_SECRET){
-    //   jwt.verify(token, process.env.JWT_SECRET, function(err : any, decoded : decodeData)    
-    //   {
-    //     if (err)
-    //     {
-    //       return res.status(401).json({ message: 'Para prosseguir, faça login novamente.' });
-    //     };
-    //     req.userId = decoded.userId;
-    //     req.userType = decoded.userType;
-    //     req.userName = decoded.userName;
-    //     req.userEmail = decoded.userEmail;
-        next();
-    //   });
-    // } else {  
-    //   return res.status(401).json({ message: 'Para prosseguir, faça login novamente.' });
-    // }  
+    if (process.env.JWT_SECRET){
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET) as decodeData;  
+            (req as any).userId = decoded.userId;
+            (req as any).userType = decoded.userType;
+            (req as any).userName = decoded.userName;
+            (req as any).userEmail = decoded.userEmail;
+            next();
+        }
+        catch (err : any) {
+            return res.status(401).json({ message: 'Para prosseguir, faça login novamente.' });
+        }
+    } else {  
+        return res.status(401).json({ message: 'Para prosseguir, faça login novamente.' });
+    }  
 };
 
 export default authenticate;
