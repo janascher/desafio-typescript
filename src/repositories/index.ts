@@ -1,5 +1,5 @@
 import { PoolClient } from 'pg';
-import pool from '../config/db.js';
+import pool from '../config/db';
 
 export class Repository
 {
