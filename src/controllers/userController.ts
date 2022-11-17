@@ -13,9 +13,13 @@ export class UserController
         this.userServices = service;
     }
 
-    public findAllUsers(req: Request, res: Response)
+    public async findAllUsers(req: Request, res: Response)
     {
-        const result = this.userServices.getAllUsers();
+        const result = await this.userServices.getAllUsers();
+        if(result.error === null){
+            res.status(200).json(result)
+        }
+        else{res.status(result.status).json({message: result.error});}
     }
 
     public async findMyUser(req: AuthenticatedUserRequest, res: Response)
@@ -28,9 +32,14 @@ export class UserController
         else{res.status(result.status).json({message: result.error});}
     }
 
-    public findUser(req: Request, res: Response)
+    public async findUser(req: AuthenticatedUserRequest, res: Response)
     {
-
+        const {userId} = req
+        const result = await this.userServices.getUserById(userId);
+        if(result.error === null){
+            res.status(200).json(result)
+        }
+        else{res.status(result.status).json({message: result.error});}
     }
 
     public async createUser(req: Request, res: Response)

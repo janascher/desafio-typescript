@@ -15,11 +15,13 @@ export class UserServices {
         const client = await this.repository.connect();
         try {
             // this.repository.begin(client);
-            const findUser = await this.repository.anyQuery(client);
+            const findUser = await this.repository.getAllUsers(client);
             // this.repository.commit(client);
             this.repository.release(client);
+            return findUser
         } catch (error) {
             this.repository.release(client);
+            return {'status': 500, 'error': 'erro buscando usuários'};
         }
     } 
 
@@ -31,7 +33,19 @@ export class UserServices {
             return getMyUser;
         } catch (error) {
             this.repository.release(client);
-            return {'status': 500, 'error': 'erro criando usuário'};
+            return {'status': 500, 'error': 'erro buscando usuário'};
+        }
+    }
+
+    public async getUserById(userId: string){
+        const client = await this.repository.connect(); 
+        try {
+            const getUserById = await this.repository.getUserById(client, userId) 
+            this.repository.release(client);
+            return getUserById;
+        } catch (error) {
+            this.repository.release(client);
+            return {'status': 500, 'error': 'erro buscando usuário'};
         }
     }
 

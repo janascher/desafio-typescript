@@ -41,14 +41,19 @@ export class Repository
         return;
     }
 
-    public async anyQuery(client : PoolClient)
+    public async getAllUsers(client : PoolClient)
     {
         const query = {
-            'text':'',
+            'text':`
+            select usuario.id, usuario.is_admin, usuario.username, usuario.email, usuario.first_name, usuario.last_name, equipe.name 
+            from usuario
+            left join equipe
+            on usuario.squad = equipe.id
+            `,
             'values':[]
         }
         const res = await client.query(query);
-        return { 'error' : null };
+        return {'data': res.rows, 'error': null};
     }
 
     public async login(client : PoolClient, _email : string)
