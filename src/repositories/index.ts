@@ -94,24 +94,71 @@ export class Repository
     public async getMyUser(client: PoolClient, userId : string)
     {
         const query = {
-            'text':`SELECT * FROM usuario WHERE id=$1`,
+            'text':`select usuario.id, usuario.is_admin, usuario.username, usuario.email, usuario.first_name, usuario.last_name, equipe.name 
+            from usuario
+            inner join equipe
+            on usuario.squad = equipe.id
+            where usuario.id = $1`,
             'values':[userId]
         }
         const res = await client.query(query)
 
-        return {'userId': res.rows[0].id, 'userType': res.rows[0].is_admin, 'userEmail': res.rows[0].email, 'userName': res.rows[0].username, 'error': null}
+        return {'userId': res.rows[0].id,
+                'userType': res.rows[0].is_admin, 
+                'userEmail': res.rows[0].email, 
+                'userName': res.rows[0].username, 
+                'name': (res.rows[0].first_name+res.rows[0].last_name),
+                'teamName': res.rows[0].name, 
+                'error': null}
     }
 
 
     public async getUserById(client: PoolClient, userId : string)
     {
         const query = {
-            'text':`SELECT * FROM usuario WHERE id=$1`,
+            'text':`select usuario.id, usuario.is_admin, usuario.username, usuario.email, usuario.first_name, usuario.last_name, equipe.name 
+            from usuario
+            inner join equipe
+            on usuario.squad = equipe.id
+            where usuario.id = $1`,
             'values':[userId]
         }
         const res = await client.query(query)
 
-        return {'userId': res.rows[0].id, 'userType': res.rows[0].is_admin, 'userEmail': res.rows[0].email, 'userName': res.rows[0].username, 'error': null}
+        return {'userId': res.rows[0].id,
+                'userType': res.rows[0].is_admin, 
+                'userEmail': res.rows[0].email, 
+                'userName': res.rows[0].username, 
+                'name': (res.rows[0].first_name+res.rows[0].last_name),
+                'teamName': res.rows[0].name, 
+                'error': null}
+    }
+
+    public async getAllTeams(client: PoolClient)
+    {
+        const query = {
+            'text':`select equipe.id,equipe.name,usuario.username from equipe 
+            inner join usuario
+            on usuario.id = equipe.leader`,
+            'values':[]
+        }
+        const res = await client.query(query)
+
+        return {'teamId': res.rows[0].id, 'teamName': res.rows[0].name, 'teamLeader': res.rows[0].username, 'error': null}
+    }
+
+    public async getTeamById(client: PoolClient, teamId: string)
+    {
+        const query = {
+            'text':`select equipe.id,equipe.name,usuario.username from equipe 
+            inner join usuario
+            on usuario.id = equipe.leader
+            where equipe.id = $1`,
+            'values':[teamId]
+        }
+        const res = await client.query(query)
+
+        return {'teamId': res.rows[0].id, 'teamName': res.rows[0].name, 'teamLeader': res.rows[0].username, 'error': null}
     }
 }
 
