@@ -90,6 +90,7 @@ export class Repository
 
         return {'userId': res.rows[0].id, 'userType': res.rows[0].is_admin, 'userEmail': res.rows[0].email, 'userName': res.rows[0].username, 'error': null};
     }
+
     public async getMyUser(client: PoolClient, userId : string)
     {
         const query = {
@@ -97,7 +98,19 @@ export class Repository
             'values':[userId]
         }
         const res = await client.query(query)
-        
+
+        return {'userId': res.rows[0].id, 'userType': res.rows[0].is_admin, 'userEmail': res.rows[0].email, 'userName': res.rows[0].username, 'error': null}
+    }
+
+
+    public async getUserById(client: PoolClient, userId : string)
+    {
+        const query = {
+            'text':`SELECT * FROM usuario WHERE id=$1`,
+            'values':[userId]
+        }
+        const res = await client.query(query)
+
         return {'userId': res.rows[0].id, 'userType': res.rows[0].is_admin, 'userEmail': res.rows[0].email, 'userName': res.rows[0].username, 'error': null}
     }
 }
