@@ -12,7 +12,7 @@ const userController = new UserController(userServices);
 
 router.get('/', authenticate, (req, res) => userController.findAllUsers(req, res));
 router.get('/me', authenticate, (req, res) => userController.findMyUser(req as AuthenticatedUserRequest, res));
-router.get('/:user_id', authenticate, (req, res) => userController.findUser(req, res));
+router.get('/:user_id', authenticate, (req, res) => userController.findUser(req as AuthenticatedUserRequest, res));
 
 router.post('/', (req, res) => userController.createUser(req, res));
 
