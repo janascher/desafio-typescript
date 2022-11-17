@@ -10,14 +10,15 @@ export class TeamServices {
 
     public async getAllTeams()
     {
-        const client = await this.repository.connect();
+        const client = await this.repository.connect(); 
         try {
-            // this.repository.begin(client);
-            const findUser = await this.repository.anyQuery(client);
-            // this.repository.commit(client);
+            const getTeams = await this.repository.getAllTeams(client);
             this.repository.release(client);
+            console.log(getTeams)
+            return getTeams;
         } catch (error) {
             this.repository.release(client);
+            return {'status': 500, 'error': 'erro buscando Teams'};
         }
     } 
 }

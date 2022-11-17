@@ -142,14 +142,22 @@ export class Repository
     public async getAllTeams(client: PoolClient)
     {
         const query = {
-            'text':`select equipe.id,equipe.name,usuario.username from equipe 
-            inner join usuario
-            on usuario.id = equipe.leader`,
+            'text':`
+                    SELECT a.id, a.name, b.username, d.username as member
+                        FROM equipe a
+                        LEFT JOIN usuario b on b.id = a.leader
+                        LEFT JOIN (
+                                    SELECT a.squad, b.name, a.username	
+                                        FROM usuario a
+                                        LEFT JOIN equipe b on a.squad = b.id
+                                        LEFT JOIN usuario c on c.id = b.leader
+                                        WHERE a.squad is not null) d on a.id=d.squad
+                        ORDER BY 2,4
+                    `,
             'values':[]
         }
-        const res = await client.query(query)
-
-        return {'teamId': res.rows[0].id, 'teamName': res.rows[0].name, 'teamLeader': res.rows[0].username, 'error': null}
+        const res = await client.query(query);
+        return {'data': res.rows, 'error': null};
     }
 
     public async getTeamById(client: PoolClient, teamId: string)
