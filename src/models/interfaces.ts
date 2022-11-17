@@ -13,3 +13,7 @@ export interface UserData{
     is_admin: boolean
 }
 
+export interface TeamData{
+    name: string,
+    leader: string
+}
