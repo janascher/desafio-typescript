@@ -32,11 +32,14 @@ export class UserServices {
             const createdUser = await this.repository.createUser(client, userId, userData);
             // this.repository.commit(client);
             this.repository.release(client);
+
+            console.log(createdUser);
             if (createdUser){
                 return createdUser;
             }    
             return {'status': 500, 'error': 'erro criando usuário'};    
         } catch (error) {
+            console.log(error)
             this.repository.release(client);
             return {'status': 500, 'error': 'erro criando usuário'};
         }
