@@ -1,3 +1,5 @@
+import { Request } from "express";
+
 export interface LoginData{
     email: string,
     password: string
@@ -11,5 +13,9 @@ export interface UserData{
     password: string,
     squad: string,
     is_admin: boolean
+}
+
+export interface AuthenticatedUserRequest extends Request{
+    userId: string
 }
 

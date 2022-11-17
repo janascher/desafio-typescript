@@ -54,7 +54,7 @@ export class Repository
     public async login(client : PoolClient, _email : string)
     {
         const query = {
-            'text':'SELECT id, email, password, username, is_admin FROM usuarios WHERE email = $1',
+            'text':'SELECT id, email, password, username, is_admin FROM usuario WHERE email = $1',
             'values':[_email]
         }
 
@@ -102,14 +102,19 @@ export class Repository
             'values':[userId]
         }
         const res = await client.query(query)
-
-        return {'userId': res.rows[0].id,
+        if(res.rows.length>0){
+            return {'userId': res.rows[0].id,
                 'userType': res.rows[0].is_admin, 
                 'userEmail': res.rows[0].email, 
                 'userName': res.rows[0].username, 
                 'name': (res.rows[0].first_name+res.rows[0].last_name),
                 'teamName': res.rows[0].name, 
                 'error': null}
+        }
+        else{
+            throw new Error('Impossivel buscar usuario')
+        }
+        
     }
 
 

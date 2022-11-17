@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { v4 as uuid } from 'uuid';
 import { UserServices } from '../services/users';
-import { UserData } from '../models';
+import { UserData, AuthenticatedUserRequest } from '../models';
 import jwt from 'jsonwebtoken';
 
 export class UserController
@@ -18,9 +18,14 @@ export class UserController
         const result = this.userServices.getAllUsers();
     }
 
-    public findMyUser(req: Request, res: Response)
+    public async findMyUser(req: AuthenticatedUserRequest, res: Response)
     {
-        
+        const {userId} = req
+        const result = await this.userServices.getMyUser(userId);
+        if(result.error === null){
+            res.status(200).json(result)
+        }
+        else{res.status(result.status).json({message: result.error});}
     }
 
     public findUser(req: Request, res: Response)
