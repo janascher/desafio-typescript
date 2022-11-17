@@ -5,9 +5,9 @@ export class TeamController
 {
     private teamServices : TeamServices;
 
-    constructor()
+    constructor(service : TeamServices)
     {
-        this.teamServices = new TeamServices();
+        this.teamServices = service;
     }
 
     public async findAllTeams(req: Request, res: Response)

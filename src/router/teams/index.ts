@@ -1,9 +1,13 @@
 import { Router } from "express";
 import authenticate from "../../middlewares/authenticate";
 import { TeamController } from "../../controllers/teamController";
+import { TeamServices } from "../../services/teams";
+import { Repository } from "../../repositories";
 
 const router = Router();
-const teamController = new TeamController();
+const repository = new Repository();
+const teamServices = new TeamServices(repository);
+const teamController = new TeamController(teamServices);
 
 router.get('/', authenticate, teamController.findAllTeams);
 router.get('/:team_id', authenticate, teamController.findTeam);

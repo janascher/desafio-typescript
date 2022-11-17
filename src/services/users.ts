@@ -5,9 +5,9 @@ import bcrypt from 'bcrypt';
 export class UserServices {
     private repository : Repository;
 
-    constructor()
+    constructor(repo : Repository)
     {
-        this.repository = new Repository();
+        this.repository = repo;
     }
 
     public async getAllUsers()
