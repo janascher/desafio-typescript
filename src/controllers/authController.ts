@@ -10,9 +10,9 @@ export class AuthController
 {
     private authServices : AuthServices;
 
-    constructor()
+    constructor(service : AuthServices)
     {
-        this.authServices = new AuthServices();
+        this.authServices = service;
     }
 
     public async login(req: Request, res: Response)

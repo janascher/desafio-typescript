@@ -8,9 +8,9 @@ export class UserController
 {
     private userServices : UserServices;
 
-    constructor()
+    constructor(service : UserServices)
     {
-        this.userServices = new UserServices();
+        this.userServices = service;
     }
 
     public findAllUsers(req: Request, res: Response)

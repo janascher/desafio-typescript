@@ -3,9 +3,9 @@ import { Repository } from "../repositories/index";
 export class TeamServices {
     private repository : Repository;
 
-    constructor()
+    constructor(repo : Repository)
     {
-        this.repository = new Repository();
+        this.repository = repo;
     }
 
     public async getAllTeams()

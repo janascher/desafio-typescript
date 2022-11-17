@@ -4,6 +4,7 @@
   "description": "<div align=\"center\">\r \t<a  href=\"https://www.alphaedtech.org.br/\">\r \t    <img  src=\"https://user-images.githubusercontent.com/79182711/187928980-1c1c834c-d92c-4565-b7b6-9cf5b644873e.png\"  alt=\"Alpha EdTech\"  title=\"Alpha EdTech\"  width=\"250\" />\r \t</a>\r \t<h3>\r \t\tDesafio TypeScript da\r \t\t<a  href=\"https://www.alphaedtech.org.br/\">\r \t\tAlpha EdTech\r \t\t</a>\r \t</h3>\r </div>",
   "main": "index.js",
   "scripts": {
+    "start": "npx tsc && node ./dist/src/index.js",
     "build": "npx tsc",
     "watch": "npx tsc --watch",
     "start:dev": "nodemon"

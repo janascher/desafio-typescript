@@ -1,18 +1,22 @@
 import { Router } from "express";
 import authenticate from "../../middlewares/authenticate";
 import { UserController } from "../../controllers/userController";
+import { UserServices } from "../../services/users";
+import { Repository } from "../../repositories";
 
 const router = Router();
-const userController = new UserController();
+const repository = new Repository();
+const userServices = new UserServices(repository);
+const userController = new UserController(userServices);
 
-router.get('/', authenticate, userController.findAllUsers);
-router.get('/me', authenticate, userController.findMyUser);
-router.get('/:user_id', authenticate, userController.findUser);
+router.get('/', authenticate, (req, res) => userController.findAllUsers(req, res));
+router.get('/me', authenticate, (req, res) => userController.findMyUser(req, res));
+router.get('/:user_id', authenticate, (req, res) => userController.findUser(req, res));
 
-router.post('/', userController.createUser);
+router.post('/', (req, res) => userController.createUser(req, res));
 
-router.patch('/:user_id', authenticate, userController.updateUser);
+router.patch('/:user_id', authenticate, (req, res) => userController.updateUser(req, res));
 
-router.delete('/:user_id', authenticate, userController.deleteUser);
+router.delete('/:user_id', authenticate, (req, res) => userController.deleteUser(req, res));
 
 export default router;
