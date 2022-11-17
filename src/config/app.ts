@@ -21,7 +21,7 @@ export class App {
 
     private routes()
     {
-        this.app.use('api', routes)
+        this.app.use('/api', routes)
     }
 
     public listen(port: number)

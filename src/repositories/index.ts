@@ -1,6 +1,6 @@
 import { PoolClient } from 'pg';
 import pool from '../config/db';
-import { LoginData } from '../models/interfaces';
+import { UserData } from '../models/';
 
 export class Repository
 {
@@ -59,6 +59,35 @@ export class Repository
         }
 
         const res = await client.query(query);
-        return {'userID': res.rows[0].id, 'password': res.rows[0].password, 'userType': res.rows[0].is_admin, 'userEmail': res.rows[0].email, 'userName': res.rows[0].username, 'error': null};
+        return {'userId': res.rows[0].id, 'password': res.rows[0].password, 'userType': res.rows[0].is_admin, 'userEmail': res.rows[0].email, 'userName': res.rows[0].username, 'error': null};
     }
+
+    public async createUser(client : PoolClient, userId : string,  userData : UserData)
+    {
+        const query = {
+            'text':`INSERT INTO usuario 
+                        (   id,
+                            username,
+                            first_name,
+                            last_name,
+                            email,
+                            password,
+                            squad,
+                            is_admin)
+                        values 
+                        ($1, $2, $3, $4, $5, $6, $7, $8::bool) RETURNING id, username, email, is_admin
+                    `,
+            'values':[  userId, 
+                        userData.username,
+                        userData.first_name,
+                        userData.last_name,
+                        userData.email,
+                        userData.password,
+                        userData.squad,
+                        userData.is_admin ]
+        }
+        const res = await client.query(query);
+
+        return {'userId': res.rows[0].id, 'userType': res.rows[0].is_admin, 'userEmail': res.rows[0].email, 'userName': res.rows[0].username, 'error': null};
+    }    
 }

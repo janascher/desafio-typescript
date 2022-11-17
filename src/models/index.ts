@@ -1,0 +1,1 @@
+export type { LoginData, UserData } from './interfaces'

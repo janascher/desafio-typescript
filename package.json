@@ -22,10 +22,12 @@
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
     "@types/cookie-parser": "^1.4.3",
+    "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.14",
     "@types/jsonwebtoken": "^8.5.9",
     "@types/node": "^18.11.9",
     "@types/pg": "^8.6.5",
+    "@types/uuid": "^8.3.4",
     "@types/uuid-validate": "^0.0.1",
     "nodemon": "^2.0.20",
     "ts-node": "^10.9.1",
