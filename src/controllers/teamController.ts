@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import { v4 as uuid } from 'uuid';
 import { TeamServices } from '../services/teams';
 import { TeamData } from '../models';
+import { AuthenticatedUserDataRequest } from '../models';
+
 
 export class TeamController
 {
@@ -12,10 +14,22 @@ export class TeamController
         this.teamServices = service;
     }
 
-    public async findAllTeams(req: Request, res: Response)
+    public async findAllTeams(req: AuthenticatedUserDataRequest, res: Response)
     {
-        const result = await this.teamServices.getAllTeams();
-    }
+        const userType = req.userType
+        if (userType) {
+            const result = await this.teamServices.getAllTeams();
+            if(result.error === null){
+                res.status(200).json(result)
+            }
+            else{
+                res.status(result.status).json({message: result.error})
+            }
+        }
+        else {
+            res.status(401).json({message: 'Usuário não tem autorização.'})
+        }
+    }   
 
     public async findTeam(req: Request, res: Response)
     {

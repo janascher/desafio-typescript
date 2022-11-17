@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { v4 as uuid } from 'uuid';
 import { UserServices } from '../services/users';
-import { UserData } from '../models';
+import { UserData, AuthenticatedUserRequest } from '../models';
 import jwt from 'jsonwebtoken';
 
 export class UserController
@@ -13,19 +13,33 @@ export class UserController
         this.userServices = service;
     }
 
-    public findAllUsers(req: Request, res: Response)
+    public async findAllUsers(req: Request, res: Response)
     {
-        const result = this.userServices.getAllUsers();
+        const result = await this.userServices.getAllUsers();
+        if(result.error === null){
+            res.status(200).json(result)
+        }
+        else{res.status(result.status).json({message: result.error});}
     }
 
-    public findMyUser(req: Request, res: Response)
+    public async findMyUser(req: AuthenticatedUserRequest, res: Response)
     {
-        
+        const {userId} = req
+        const result = await this.userServices.getMyUser(userId);
+        if(result.error === null){
+            res.status(200).json(result)
+        }
+        else{res.status(result.status).json({message: result.error});}
     }
 
-    public findUser(req: Request, res: Response)
+    public async findUser(req: AuthenticatedUserRequest, res: Response)
     {
-
+        const {userId} = req
+        const result = await this.userServices.getUserById(userId);
+        if(result.error === null){
+            res.status(200).json(result)
+        }
+        else{res.status(result.status).json({message: result.error});}
     }
 
     public async createUser(req: Request, res: Response)
@@ -40,7 +54,7 @@ export class UserController
             const alreadyHasToken = req.cookies.token;
             if (alreadyHasToken) { res.clearCookie('token'); };
             if (process.env.JWT_SECRET){
-                const token = jwt.sign({ userId, userType, userEmail, userName}, process.env.JWT_SECRET, { expiresIn: 7200 });
+                const token = jwt.sign({ userId: userId, userType: userType, userEmail: userEmail, userName: userName }, process.env.JWT_SECRET, { expiresIn: 7200 });
                 res.cookie('token', token, { httpOnly: true });
                 res.status(200).json({ userType });
             }     

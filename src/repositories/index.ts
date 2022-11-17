@@ -42,20 +42,25 @@ export class Repository
         return;
     }
 
-    public async anyQuery(client : PoolClient)
+    public async getAllUsers(client : PoolClient)
     {
         const query = {
-            'text':'',
+            'text':`
+            select usuario.id, usuario.is_admin, usuario.username, usuario.email, usuario.first_name, usuario.last_name, equipe.name 
+            from usuario
+            left join equipe
+            on usuario.squad = equipe.id
+            `,
             'values':[]
         }
         const res = await client.query(query);
-        return { 'error' : null };
+        return {'data': res.rows, 'error': null};
     }
 
     public async login(client : PoolClient, _email : string)
     {
         const query = {
-            'text':'SELECT id, email, password, username, is_admin FROM usuarios WHERE email = $1',
+            'text':'SELECT id, email, password, username, is_admin FROM usuario WHERE email = $1',
             'values':[_email]
         }
 
@@ -97,20 +102,25 @@ export class Repository
         const query = {
             'text':`select usuario.id, usuario.is_admin, usuario.username, usuario.email, usuario.first_name, usuario.last_name, equipe.name 
             from usuario
-            inner join equipe
+            left join equipe
             on usuario.squad = equipe.id
             where usuario.id = $1`,
             'values':[userId]
         }
         const res = await client.query(query)
-
-        return {'userId': res.rows[0].id,
+        if(res.rows.length>0){
+            return {'userId': res.rows[0].id,
                 'userType': res.rows[0].is_admin, 
                 'userEmail': res.rows[0].email, 
                 'userName': res.rows[0].username, 
                 'name': (res.rows[0].first_name+res.rows[0].last_name),
                 'teamName': res.rows[0].name, 
                 'error': null}
+        }
+        else{
+            throw new Error('Impossivel buscar usuario')
+        }
+        
     }
 
 
@@ -119,7 +129,7 @@ export class Repository
         const query = {
             'text':`select usuario.id, usuario.is_admin, usuario.username, usuario.email, usuario.first_name, usuario.last_name, equipe.name 
             from usuario
-            inner join equipe
+            left join equipe
             on usuario.squad = equipe.id
             where usuario.id = $1`,
             'values':[userId]
@@ -138,14 +148,22 @@ export class Repository
     public async getAllTeams(client: PoolClient)
     {
         const query = {
-            'text':`select equipe.id,equipe.name,usuario.username from equipe 
-            inner join usuario
-            on usuario.id = equipe.leader`,
+            'text':`
+                    SELECT a.id, a.name, b.username, d.username as member
+                        FROM equipe a
+                        LEFT JOIN usuario b on b.id = a.leader
+                        LEFT JOIN (
+                                    SELECT a.squad, b.name, a.username	
+                                        FROM usuario a
+                                        LEFT JOIN equipe b on a.squad = b.id
+                                        LEFT JOIN usuario c on c.id = b.leader
+                                        WHERE a.squad is not null) d on a.id=d.squad
+                        ORDER BY 2,4
+                    `,
             'values':[]
         }
-        const res = await client.query(query)
-
-        return {'teamId': res.rows[0].id, 'teamName': res.rows[0].name, 'teamLeader': res.rows[0].username, 'error': null}
+        const res = await client.query(query);
+        return {'data': res.rows, 'error': null};
     }
 
     public async getTeamById(client: PoolClient, teamId: string)
