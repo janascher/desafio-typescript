@@ -113,8 +113,7 @@ export class Repository
         }
         else{
             throw new Error('Impossivel buscar usuario')
-        }
-        
+        }       
     }
 
 
@@ -143,15 +142,16 @@ export class Repository
     {
         const query = {
             'text':`
-                    SELECT a.id, a.name, b.username, d.username as member
+                    SELECT a.id, a.name, b.username as leader, d.username as member
                         FROM equipe a
-                        LEFT JOIN usuario b on b.id = a.leader
-                        LEFT JOIN (
+                            LEFT JOIN usuario b on b.id = a.leader and b.deleted_at is null
+                            LEFT JOIN (
                                     SELECT a.squad, b.name, a.username	
                                         FROM usuario a
-                                        LEFT JOIN equipe b on a.squad = b.id
-                                        LEFT JOIN usuario c on c.id = b.leader
-                                        WHERE a.squad is not null) d on a.id=d.squad
+                                            LEFT JOIN equipe b on a.squad = b.id and b.deleted_at is null
+                                            LEFT JOIN usuario c on c.id = b.leader
+                                        WHERE a.squad is not null and a.deleted_at is null) d on a.id=d.squad
+                        WHERE a.deleted_at is null                
                         ORDER BY 2,4
                     `,
             'values':[]
@@ -163,15 +163,23 @@ export class Repository
     public async getTeamById(client: PoolClient, teamId: string)
     {
         const query = {
-            'text':`select equipe.id,equipe.name,usuario.username from equipe 
-            inner join usuario
-            on usuario.id = equipe.leader
-            where equipe.id = $1`,
-            'values':[teamId]
+                'text':`
+                    SELECT a.id, a.name, b.username as leader, d.username as member
+                    FROM equipe a
+                        LEFT JOIN usuario b on b.id = a.leader and b.deleted_at is null
+                        LEFT JOIN (
+                                SELECT a.squad, b.name, a.username	
+                                    FROM usuario a
+                                        LEFT JOIN equipe b on a.squad = b.id and b.deleted_at is null
+                                        LEFT JOIN usuario c on c.id = b.leader
+                                    WHERE a.squad = $1 and a.deleted_at is null) d on a.id = d.squad 
+                    WHERE a.deleted_at is null  and a.id = $1              
+                    ORDER BY 2,4
+                `,
+                'values':[teamId]
         }
         const res = await client.query(query)
-
-        return {'teamId': res.rows[0].id, 'teamName': res.rows[0].name, 'teamLeader': res.rows[0].username, 'error': null}
+        return {'data': res.rows, 'error': null};
     }
 }
 

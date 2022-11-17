@@ -14,11 +14,23 @@ export class TeamServices {
         try {
             const getTeams = await this.repository.getAllTeams(client);
             this.repository.release(client);
-            console.log(getTeams)
             return getTeams;
         } catch (error) {
             this.repository.release(client);
             return {'status': 500, 'error': 'erro buscando Teams'};
+        }
+    } 
+
+    public async getTeam(teamId : string)
+    {
+        const client = await this.repository.connect(); 
+        try {
+            const getTeam = await this.repository.getTeamById(client, teamId);
+            this.repository.release(client);
+            return getTeam;
+        } catch (error) {
+            this.repository.release(client);
+            return {'status': 500, 'error': 'erro buscando Team'};
         }
     } 
 }
