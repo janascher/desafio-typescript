@@ -19,3 +19,9 @@ export interface AuthenticatedUserRequest extends Request{
     userId: string
 }
 
+export interface AuthenticatedUserDataRequest extends Request{
+    userId: string,
+    userType: boolean,
+    userEmail: string,
+    userName: string
+}

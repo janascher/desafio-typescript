@@ -25,7 +25,7 @@ export class AuthController
             const alreadyHasToken = req.cookies.token;
             if (alreadyHasToken) { res.clearCookie('token'); };
             if (process.env.JWT_SECRET){
-                const token = jwt.sign({ userId, userType, userEmail, userName}, process.env.JWT_SECRET, { expiresIn: 7200 });
+                const token = jwt.sign({ userId: userId, userType: userType, userEmail: userEmail, userName: userName }, process.env.JWT_SECRET, { expiresIn: 7200 });
                 res.cookie('token', token, { httpOnly: true });
                 res.status(200).json({ userType });
             }     

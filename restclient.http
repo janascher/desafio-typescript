@@ -21,15 +21,15 @@ content-type: application/json
 GET http://localhost:8000/api/users/nick/nick1 HTTP/1.1
 
 ###
-GET http://localhost:8000/api/users/nick/nick2 HTTP/1.1
+GET http://192.168.15.15:8000/api/teams HTTP/1.1
 
 ###
-POST http://localhost:8000/api/users/login HTTP/1.1
+POST http://192.168.15.15:8000/api/login HTTP/1.1
 content-type: application/json
 
 { 
-    "email": "alvaromartinezferreira@gmail.com",
-    "pwd": "alvaro"
+    "email": "rogerio@gmail.com",
+    "password": "123456"
 }
 
 ###

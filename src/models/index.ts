@@ -1,1 +1,1 @@
-export type { LoginData, UserData, AuthenticatedUserRequest } from './interfaces'
+export type { LoginData, UserData, AuthenticatedUserRequest, AuthenticatedUserDataRequest } from './interfaces'
