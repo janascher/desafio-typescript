@@ -1,6 +1,7 @@
 import { PoolClient } from 'pg';
 import pool from '../config/db';
 import { UserData } from '../models/';
+import { TeamData } from '../models';
 
 export class Repository
 {
@@ -41,14 +42,19 @@ export class Repository
         return;
     }
 
-    public async anyQuery(client : PoolClient)
+    public async getAllUsers(client : PoolClient)
     {
         const query = {
-            'text':'',
+            'text':`
+            select usuario.id, usuario.is_admin, usuario.username, usuario.email, usuario.first_name, usuario.last_name, equipe.name 
+            from usuario
+            left join equipe
+            on usuario.squad = equipe.id
+            `,
             'values':[]
         }
         const res = await client.query(query);
-        return { 'error' : null };
+        return {'data': res.rows, 'error': null};
     }
 
     public async login(client : PoolClient, _email : string)
@@ -181,5 +187,26 @@ export class Repository
         const res = await client.query(query)
         return {'data': res.rows, 'error': null};
     }
-}
 
+    public async createTeamQuery(client: PoolClient, teamId: string, teamData: TeamData)
+    {
+        const query = {
+            'text':`INSERT INTO equipe (id, name, leader) values ($1, $2, $3) RETURNING id, name, leader`,
+            'values':[teamId, teamData.name, teamData.leader]
+        }
+        const res = await client.query(query)
+
+        return {'teamId': res.rows[0].id, 'teamName': res.rows[0].name, 'teamLeader': res.rows[0].leader, 'error': null}
+    }
+
+    public async addNewTeamMemberQuery(client: PoolClient)
+    {
+        const query = {
+            'text':``,
+            'values':[]
+        }
+        const res = await client.query(query)
+
+        return {}
+    }
+}
