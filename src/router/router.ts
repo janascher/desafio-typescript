@@ -11,8 +11,8 @@ const repository = new Repository();
 const authServices = new AuthServices(repository);
 const authController = new AuthController(authServices);
 
-router.post('/login', authController.login);
-router.post('/logout', authenticate, authController.logout);
+router.post('/login', (req, res) => authController.login(req, res));
+router.post('/logout', authenticate, (req, res) => authController.logout(req, res));
 
 router.use('/users', userRoutes);
 router.use('/teams', teamRoutes);
