@@ -23,6 +23,18 @@ export class UserServices {
         }
     } 
 
+    public async getMyUser(userId: string){
+        const client = await this.repository.connect(); 
+        try {
+            const getMyUser = await this.repository.getMyUser(client, userId) 
+            this.repository.release(client);
+            return getMyUser;
+        } catch (error) {
+            this.repository.release(client);
+            return {'status': 500, 'error': 'erro criando usuário'};
+        }
+    }
+
     public async create(userId: string, userData : UserData )
     {
         userData.password = await this.hashPassword(userData.password);
@@ -32,12 +44,7 @@ export class UserServices {
             const createdUser = await this.repository.createUser(client, userId, userData);
             // this.repository.commit(client);
             this.repository.release(client);
-
-            console.log(createdUser);
-            if (createdUser){
-                return createdUser;
-            }    
-            return {'status': 500, 'error': 'erro criando usuário'};    
+            return createdUser;
         } catch (error) {
             console.log(error)
             this.repository.release(client);
