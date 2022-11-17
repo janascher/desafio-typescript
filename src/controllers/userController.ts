@@ -20,7 +20,7 @@ export class UserController
 
     public findMyUser(req: Request, res: Response)
     {
-
+        
     }
 
     public findUser(req: Request, res: Response)
