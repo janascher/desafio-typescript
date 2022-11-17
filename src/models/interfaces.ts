@@ -15,6 +15,10 @@ export interface UserData{
     is_admin: boolean
 }
 
+export interface TeamData{
+    name: string,
+    leader: string
+
 export interface AuthenticatedUserRequest extends Request{
     userId: string
 }

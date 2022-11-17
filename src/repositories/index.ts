@@ -1,6 +1,7 @@
 import { PoolClient } from 'pg';
 import pool from '../config/db';
 import { UserData } from '../models/';
+import { TeamData } from '../models';
 
 export class Repository
 {
@@ -169,7 +170,7 @@ export class Repository
     {
         const query = {
             'text':`select equipe.id,equipe.name,usuario.username from equipe 
-            inner join usuario
+            left join usuario
             on usuario.id = equipe.leader
             where equipe.id = $1`,
             'values':[teamId]
@@ -178,5 +179,26 @@ export class Repository
 
         return {'teamId': res.rows[0].id, 'teamName': res.rows[0].name, 'teamLeader': res.rows[0].username, 'error': null}
     }
-}
 
+    public async createTeamQuery(client: PoolClient, teamId: string, teamData: TeamData)
+    {
+        const query = {
+            'text':`INSERT INTO equipe (id, name, leader) values ($1, $2, $3) RETURNING id, name, leader`,
+            'values':[teamId, teamData.name, teamData.leader]
+        }
+        const res = await client.query(query)
+
+        return {'teamId': res.rows[0].id, 'teamName': res.rows[0].name, 'teamLeader': res.rows[0].leader, 'error': null}
+    }
+
+    public async addNewTeamMemberQuery(client: PoolClient)
+    {
+        const query = {
+            'text':``,
+            'values':[]
+        }
+        const res = await client.query(query)
+
+        return {}
+    }
+}
