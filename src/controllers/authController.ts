@@ -21,11 +21,11 @@ export class AuthController
         const result = await this.authServices.login(loginData);
 
         if (result.error === null) {
-            const { userID, userType, userEmail, userName } = result;
+            const { userId, userType, userEmail, userName } = result;
             const alreadyHasToken = req.cookies.token;
             if (alreadyHasToken) { res.clearCookie('token'); };
             if (process.env.JWT_SECRET){
-                const token = jwt.sign({ userID, userType, userEmail, userName}, process.env.JWT_SECRET, { expiresIn: 7200 });
+                const token = jwt.sign({ userId, userType, userEmail, userName}, process.env.JWT_SECRET, { expiresIn: 7200 });
                 res.cookie('token', token, { httpOnly: true });
                 res.status(200).json({ userType });
             }     

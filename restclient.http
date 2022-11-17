@@ -1,0 +1,86 @@
+GET http://localhost:8000/api/users HTTP/1.1
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjY0NTgyMjYwLCJleHAiOjE2NjQ1ODQwNjB9.1D43v_jlyElIYH4cD_iYTsKrpvB0L_bSa6ioO7xJfVM
+##
+
+###
+POST http://192.168.15.15:8080/api/users HTTP/1.1
+content-type: application/json
+
+{
+    "username": "rogeriok",
+    "first_name": "rogerio",
+    "last_name": "kotsubo",
+    "email": "rogerio@gmail.com",
+    "password": "123456",
+    "squad": null,
+    "is_admin": "true"
+}
+
+###
+
+GET http://localhost:8000/api/users/nick/nick1 HTTP/1.1
+
+###
+GET http://localhost:8000/api/users/nick/nick2 HTTP/1.1
+
+###
+POST http://localhost:8000/api/users/login HTTP/1.1
+content-type: application/json
+
+{ 
+    "email": "alvaromartinezferreira@gmail.com",
+    "pwd": "alvaro"
+}
+
+###
+POST http://localhost:8000/api/users/logout HTTP/1.1
+content-type: application/json5"
+
+###
+PUT http://192.168.15.15:8000/api/users/pwd/1 HTTP/1.1
+content-type: application/json
+
+{ 
+    "pwd": "pwd3"
+}
+###
+GET http://localhost:8000/api/users/5 HTTP/1.1
+
+###
+PUT http://192.168.15.15:8000/api/users/1 HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Rogério9",
+    "email": "rogerio9@gmail.com",
+    "nick": "rogerio",
+    "address": "Rua 5",
+    "num": "435",
+    "complement": "Jd Manacas",
+    "city": "Campinas",
+    "state": "SP",
+    "district": "Bairro Cidade Jd",
+    "birth_date": "31-01-2000",
+    "zip": "13187-232",
+    "phone": "(19) 99999-9999"
+}  
+###
+POST http://192.168.15.15:8000/api/miniatures HTTP/1.1
+content-type: application/json
+
+{   "user_id": "1",
+    "brand_id": "1",
+    "model": "SS",
+    "color": "Vermelho",
+    "description": "Opala SS Cupê 1970"
+}
+
+###
+
+GET http://localhost:8000/api/cart/11 HTTP/1.1
+
+###
+GET http://localhost:8000/api/cart_offer/cart/12 HTTP/1.1
+
+###
+PUT http://localhost:8000/api/exchanges/close/4 HTTP/1.1
