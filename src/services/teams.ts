@@ -36,7 +36,7 @@ export class TeamServices {
         }
     } 
 
-    }
+    
 
     public async createNewTeam(userType: string, teamId: string, teamData: TeamData)
     {
