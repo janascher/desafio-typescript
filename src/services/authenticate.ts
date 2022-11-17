@@ -25,9 +25,10 @@ export class AuthServices {
             return {'status': 400, 'error': 'Login/Senha incorretos'}            
             // this.repository.commit(client);
         } catch (error) {
+            console.log(error)
             this.repository.release(client);
             return {'status': 400, 'error': 'Login/Senha incorretos'}            
         }
     } 
-    
+     
 }
