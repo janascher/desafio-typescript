@@ -41,7 +41,7 @@ export class Repository
         return;
     }
 
-    public async anyQuery(client : PoolClient)
+    public async getAllUsers(client : PoolClient)
     {
         const query = {
             'text':'',

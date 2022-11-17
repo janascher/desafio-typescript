@@ -15,7 +15,7 @@ export class UserServices {
         const client = await this.repository.connect();
         try {
             // this.repository.begin(client);
-            const findUser = await this.repository.anyQuery(client);
+            const findUser = await this.repository.getAllUsers(client);
             // this.repository.commit(client);
             this.repository.release(client);
         } catch (error) {
