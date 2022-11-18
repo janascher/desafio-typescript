@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { v4 as uuid } from 'uuid';
 import { UserServices } from '../services/users';
-import { UserData, AuthenticatedUserRequest } from '../models';
+import { UserData, AuthenticatedUserRequest, AuthenticatedUserDataRequest } from '../models';
 import jwt from 'jsonwebtoken';
 
 export class UserController
@@ -22,7 +22,7 @@ export class UserController
         else{res.status(result.status).json({message: result.error});}
     }
 
-    public async findMyUser(req: AuthenticatedUserRequest, res: Response)
+    public async findMyUser(req: AuthenticatedUserDataRequest, res: Response)
     {
         const {userId} = req
         const result = await this.userServices.getMyUser(userId);
@@ -69,8 +69,21 @@ export class UserController
 
     }
 
-    public deleteUser(req: Request, res: Response)
-    {
+    public async deleteUser(req: AuthenticatedUserDataRequest, res: Response)
+    {   
+        const admin = req.userType;
+        const userId = req.params.user_id  
 
+        if(admin !== true){        
+            return res.status(401).json("Não autorizado");
+        }
+
+        const result = await this.userServices.removeUser(userId);
+
+        if(result.error === null){
+            res.status(200).json(result);
+        } else {
+            res.status(401).json({message:result.error});
+        }        
     }
 }

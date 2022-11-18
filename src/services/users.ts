@@ -85,6 +85,19 @@ export class UserServices {
         }
     } 
 
+    public async removeUser(userId: string) {
+        const client = await this.repository.connect();
+        
+        try {
+            const deleteUser = await this.repository.deleteUser(client, userId);
+            this.repository.release(client);
+            return deleteUser;
+        } catch (error) {
+            this.repository.release(client);
+            return {'status': 500, 'error': 'erro deletando usuário'};
+        }
+    }
+
     private async hashPassword(plaintextPassword : string) {
         const hash = await bcrypt.hash(plaintextPassword, 10);
         return hash;
