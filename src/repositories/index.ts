@@ -264,19 +264,4 @@ export class Repository
 
         return {'error': null};
     }
-
-    public async getTeamLeader(client: PoolClient, teamId: string)
-    {
-        const query = {
-                'text':`
-                    SELECT a.leader, b.username
-                    FROM equipe a
-                        LEFT JOIN usuario b on b.id = a.leader and b.deleted_at is null
-                    WHERE a.deleted_at is null  and a.id = $1              
-                `,
-                'values':[teamId]
-        }
-        const res = await client.query(query)
-        return {leaderId: res.rows[0].leader, leaderName: res.rows[0].username, 'error': null};
-    }
 }
