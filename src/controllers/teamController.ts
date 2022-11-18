@@ -98,7 +98,19 @@ export class TeamController
 
     public async deleteTeam(req: AuthenticatedUserDataRequest, res: Response)
     {
-
+        const userType = req.userType;
+        const teamId = req.params.team_id;
+        if (userType) {
+            const result = await this.teamServices.deleteTeam(teamId);
+            if(result.error === null){
+                return res.status(200).json(result)
+            }
+            else{
+                return res.status(result.status).json({message: result.error})
+            }
+        } else {
+            res.status(401).json({message: 'Usuário não tem autorização.'});
+        } 
     }
 
     public async deleteTeamMember(req: AuthenticatedUserDataRequest, res: Response)

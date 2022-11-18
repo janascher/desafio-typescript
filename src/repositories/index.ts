@@ -47,7 +47,7 @@ export class Repository
     {
         const query = {
             'text':`
-            select usuario.id, usuario.is_admin, usuario.username, usuario.email, usuario.first_name, usuario.last_name, equipe.name 
+            select usuario.id, usuario.is_admin, usuario.username, usuario.email, usuario.first_name, usuario.last_name, equipe.name as squad_name
             from usuario
             left join equipe
             on usuario.squad = equipe.id
@@ -268,6 +268,35 @@ export class Repository
 
         return {'userId': res.rows[0].id, 'userType': res.rows[0].is_admin, 'userEmail': res.rows[0].email, 'userName': res.rows[0].username, 'error': null};
     }
+
+    public async deleteTeam(client: PoolClient, teamId : string){
+        const query = {
+            'text':`
+                UPDATE equipe SET
+                    deleted_at = now()
+                WHERE id = $1 RETURNING id
+            `,
+            'values': [teamId]
+        }
+
+        const res = await client.query(query);
+        return {'teamId': res.rows[0].id, 'error': null};
+    }
+
+    public async deleteSquad(client: PoolClient, teamId : string){
+        const query = {
+            'text':`
+                UPDATE usuario SET
+                    squad = null
+                WHERE squad = $1 
+            `,
+            'values': [teamId]
+        }
+
+        const res = await client.query(query);
+        return {'error': null};
+    }
+
 
     public async patch(client: PoolClient, tableName : string, updateData : UpdateQuery)
     {
