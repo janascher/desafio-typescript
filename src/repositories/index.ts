@@ -1,46 +1,45 @@
-import { PoolClient } from 'pg';
-import pool from '../config/db';
-import { UserData } from '../models/';
-import { TeamData } from '../models';
-import { UpdateQuery } from '../models/interfaces';
+import { PoolClient } from 'pg'
+import pool from '../config/db'
+import { UserData, TeamData } from '../models'
+import { UpdateQuery } from '../models/interfaces'
 
 export class Repository
 {
-    private db;
+    private db
 
     constructor()
     {
-        this.db = pool;
+        this.db = pool
     }
 
     public async connect()
     {
-        const client = await this.db.connect();
-        return client;
+        const client = await this.db.connect()
+        return client
     }
     
     public async release(client : PoolClient)
     {
-        client.release();
-        return;
+        client.release()
+        return
     }
 
     public async begin(client: PoolClient)
     {
-        const begin = await client.query('BEGIN');
-        return;
+        const begin = await client.query('BEGIN')
+        return
     }
 
     public async commit(client : PoolClient)
     {
-        const commit = await client.query('COMMIT');
-        return { 'error' : null };
+        const commit = await client.query('COMMIT')
+        return { 'error' : null }
     }
 
     public async rollback(client : PoolClient)
     {
-        const rollback = await client.query('ROLLBACK');
-        return;
+        const rollback = await client.query('ROLLBACK')
+        return
     }
 
     public async getAllUsers(client : PoolClient)
@@ -51,11 +50,13 @@ export class Repository
             from usuario
             left join equipe
             on usuario.squad = equipe.id
+            where usuario.deleted_at is null
             `,
             'values':[]
         }
-        const res = await client.query(query);
-        return {'data': res.rows, 'error': null};
+
+        const res = await client.query(query)
+        return {'data': res.rows, 'error': null}
     }
 
     public async login(client : PoolClient, _email : string)
@@ -65,8 +66,12 @@ export class Repository
             'values':[_email]
         }
 
-        const res = await client.query(query);
-        return {'userId': res.rows[0].id, 'password': res.rows[0].password, 'userType': res.rows[0].is_admin, 'userEmail': res.rows[0].email, 'userName': res.rows[0].username, 'error': null};
+        const res = await client.query(query)
+        if (res.rows.length === 0)
+        {
+            throw new Error('Usuário com esse email não existe')
+        }
+        return {'userId': res.rows[0].id, 'password': res.rows[0].password, 'userType': res.rows[0].is_admin, 'userEmail': res.rows[0].email, 'userName': res.rows[0].username, 'error': null}
     }
 
     public async createUser(client : PoolClient, userId : string,  userData : UserData)
@@ -92,9 +97,9 @@ export class Repository
                         userData.password,
                         userData.is_admin ]
         }
-        const res = await client.query(query);
 
-        return {'userId': res.rows[0].id, 'userType': res.rows[0].is_admin, 'userEmail': res.rows[0].email, 'userName': res.rows[0].username, 'error': null};
+        const res = await client.query(query)
+        return {'userId': res.rows[0].id, 'userType': res.rows[0].is_admin, 'userEmail': res.rows[0].email, 'userName': res.rows[0].username, 'error': null}
     }
 
     public async getMyUser(client: PoolClient, userId : string)
@@ -107,8 +112,10 @@ export class Repository
             where usuario.id = $1`,
             'values':[userId]
         }
+
         const res = await client.query(query)
-        if(res.rows.length>0){
+        if(res.rows.length>0)
+        {
             return {'userId': res.rows[0].id,
                 'userType': res.rows[0].is_admin, 
                 'userEmail': res.rows[0].email, 
@@ -117,7 +124,8 @@ export class Repository
                 'teamName': res.rows[0].name, 
                 'error': null}
         }
-        else{
+        else
+        {
             throw new Error('Impossivel buscar usuario')
         }       
     }
@@ -130,15 +138,15 @@ export class Repository
             from usuario
             left join equipe
             on usuario.squad = equipe.id
-            where usuario.id = $1`,
+            where usuario.id = $1 and usuario.deleted_at is null`,
             'values':[userId]
         }
-        const res = await client.query(query)
 
-        if (res.rows.length === 0) {
+        const res = await client.query(query)
+        if (res.rows.length === 0)
+        {
             throw new Error('Usuário com esse ID não existe')
         }
-
         return {'userId': res.rows[0].id,
                 'userType': res.rows[0].is_admin, 
                 'userEmail': res.rows[0].email, 
@@ -166,8 +174,9 @@ export class Repository
                     `,
             'values':[]
         }
-        const res = await client.query(query);
-        return {'data': res.rows, 'error': null};
+
+        const res = await client.query(query)
+        return {'data': res.rows, 'error': null}
     }
 
     public async getTeamById(client: PoolClient, teamId: string)
@@ -188,12 +197,13 @@ export class Repository
                 `,
                 'values':[teamId]
         }
-        const res = await client.query(query)
 
-        if (res.rows.length === 0) {
+        const res = await client.query(query)
+        if (res.rows.length === 0)
+        {
             throw new Error('Time com esse ID não existe')
         }
-        return {'data': res.rows, 'error': null};
+        return {'data': res.rows, 'error': null}
     }
 
     public async getTeamLeader(client: PoolClient, teamId: string)
@@ -207,8 +217,9 @@ export class Repository
                 `,
                 'values':[teamId]
         }
+
         const res = await client.query(query)
-        return {leaderId: res.rows[0].leader, leaderName: res.rows[0].username, 'error': null};
+        return {leaderId: res.rows[0].leader, leaderName: res.rows[0].username, 'error': null}
     }
 
     public async getIsTeamLeader(client: PoolClient, userId: string)
@@ -222,8 +233,9 @@ export class Repository
                 `,
                 'values':[userId]
         }
+
         const res = await client.query(query)
-        return {leaderId: res.rows[0].leader, 'error': null};
+        return {leaderId: res.rows[0].leader, 'error': null}
     }
     
     public async deleteTeamMember(client: PoolClient, userId: string, teamId : string)
@@ -236,8 +248,9 @@ export class Repository
                 `,
                 'values':[userId, teamId]
         }
+
         const res = await client.query(query)
-        return {'error': null};
+        return {'error': null}
     }
 
     public async getMember(client: PoolClient, userId: string, teamId: string)
@@ -250,18 +263,19 @@ export class Repository
                 `,
                 'values':[userId, teamId]
         }
+
         const res = await client.query(query)
-        return {memberId: res.rows[0].id, 'error': null};
+        return {memberId: res.rows[0].id, 'error': null}
     }
 
     public async createTeamQuery(client: PoolClient, teamId: string, teamData: TeamData)
     {
         const query = {
             'text':`INSERT INTO equipe (id, name, leader) values ($1, $2, $3) RETURNING id, name, leader`,
-            'values':[teamId, teamData.name, teamData.leader]
+            'values':[teamId, teamData.name, teamData.leader_id]
         }
-        const res = await client.query(query)
 
+        const res = await client.query(query)
         return {'teamId': res.rows[0].id, 'teamName': res.rows[0].name, 'teamLeader': res.rows[0].leader, 'error': null}
     }
     
@@ -271,8 +285,8 @@ export class Repository
             'text':`UPDATE usuario SET squad = $1 WHERE id = $2 RETURNING username`,
             'values':[team_id, user_id]
         }
-        const res = await client.query(query)
 
+        const res = await client.query(query)
         return {'user_name': res.rows[0].username, 'error': null}
     }
 
@@ -286,9 +300,8 @@ export class Repository
             'values': [userId]
         }
 
-        const res = await client.query(query);
-
-        return {'userId': res.rows[0].id, 'userType': res.rows[0].is_admin, 'userEmail': res.rows[0].email, 'userName': res.rows[0].username, 'error': null};
+        const res = await client.query(query)
+        return {'userId': res.rows[0].id, 'userType': res.rows[0].is_admin, 'userEmail': res.rows[0].email, 'userName': res.rows[0].username, 'error': null}
     }
 
     public async deleteTeam(client: PoolClient, teamId : string){
@@ -301,8 +314,12 @@ export class Repository
             'values': [teamId]
         }
 
-        const res = await client.query(query);
-        return {'teamId': res.rows[0].id, 'error': null};
+        const res = await client.query(query)
+        if (res.rows.length === 0)
+        {
+            throw new Error('Time com esse ID não existe')
+        }
+        return {'teamId': res.rows[0].id, 'error': null}
     }
 
     public async deleteSquad(client: PoolClient, teamId : string){
@@ -315,8 +332,8 @@ export class Repository
             'values': [teamId]
         }
 
-        const res = await client.query(query);
-        return {'error': null};
+        const res = await client.query(query)
+        return {'error': null}
     }
 
 
@@ -326,8 +343,8 @@ export class Repository
             'text':`UPDATE ${tableName} SET (${updateData.columns}) = (${updateData.references}) WHERE id = $1`,
             'values': updateData.values
         }
-        const res = await client.query(query)
 
-        return {'error': null};
+        const res = await client.query(query)
+        return {'error': null}
     }
 }

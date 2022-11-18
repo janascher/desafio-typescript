@@ -1,9 +1,10 @@
-import express from 'express';
-import routes from '../router/router';
-import cookieParser from 'cookie-parser';
+import express from 'express'
+import routes from '../router/router'
+import cookieParser from 'cookie-parser'
 
-export class App {
-    private app : express.Application;
+export class App
+{
+    private app : express.Application
 
     constructor()
     {
