@@ -1,4 +1,4 @@
-import { Request } from "express";
+import { Request } from "express"
 
 export interface LoginData{
     email: string,
@@ -16,7 +16,7 @@ export interface UserData{
 
 export interface TeamData{
     name: string,
-    leader: string
+    leader_id: string
 }
 
 export interface AuthenticatedUserDataRequest extends Request{
@@ -26,12 +26,12 @@ export interface AuthenticatedUserDataRequest extends Request{
     userName: string
 }
 
-export interface PatchData<T> {
+export interface PatchData<T>{
     id: string,
     data: Partial<T>
 }
 
-export interface UpdateQuery {
+export interface UpdateQuery{
     columns: string,
     references: string,
     values: any[]

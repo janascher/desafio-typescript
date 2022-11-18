@@ -1,7 +1,7 @@
-import * as dotenv from 'dotenv';
-dotenv.config();
+import * as dotenv from 'dotenv'
+dotenv.config()
 
-import { Pool } from "pg";
+import { Pool } from "pg"
 
 const pool = new Pool({
     user: process.env.DB_USER,
@@ -14,4 +14,4 @@ const pool = new Pool({
     idleTimeoutMillis: 20000,
 })
 
-export default pool;
+export default pool

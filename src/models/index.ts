@@ -1,1 +1,1 @@
-export type { LoginData, UserData, TeamData, PatchData, AuthenticatedUserDataRequest } from './interfaces'
+export type { LoginData, UserData, TeamData, PatchData, UpdateQuery, AuthenticatedUserDataRequest } from './interfaces'
