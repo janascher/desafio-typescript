@@ -64,6 +64,25 @@ export class TeamServices extends Services {
         }
     }    
 
+    public async deleteTeam(teamId : string)
+    {
+        const client = await this.repository.connect(); 
+        try {
+            await this.repository.begin(client);
+                const delTeam = await this.repository.deleteTeam(client, teamId);
+                const delSquad = await this.repository.deleteSquad(client, teamId);
+            await this.repository.commit(client);
+            this.repository.release(client);
+            return {error: null};
+        } catch (error) {
+            await this.repository.rollback(client);
+            this.repository.release(client);
+            let message
+            if (error instanceof Error) message = error.message
+            return {'status': 500, 'error': message || 'Erro excluindo membro do time'}
+        }
+    }
+
 
     public async createNewTeam(userType: boolean, teamId: string, teamData: TeamData)
     {
