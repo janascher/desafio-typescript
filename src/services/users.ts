@@ -1,7 +1,7 @@
 import { Services } from "./service";
 import { UserData, PatchData } from "../models";
 import bcrypt from 'bcrypt';
-import { EmailValidator, NameValidator, PasswordValidator } from "../validator/string";
+import { EmailValidator, NameValidator, PasswordValidator, UUIDValidator } from "../validator/string";
 import { BooleanValidator, StringValidator } from "../validator";
 
 export class UserServices extends Services {
@@ -37,6 +37,7 @@ export class UserServices extends Services {
     public async getUserById(userId: string){
         const client = await this.repository.connect(); 
         try {
+            const valUserId = new UUIDValidator(userId)
             const getUserById = await this.repository.getUserById(client, userId) 
             this.repository.release(client);
             return getUserById;
@@ -50,16 +51,15 @@ export class UserServices extends Services {
 
     public async create(userId: string, userData : UserData )
     {
-        const valEmail = new EmailValidator(userData.email);
-        const valPwd = new PasswordValidator(userData.password);
-        const valUserName = new StringValidator(userData.username);
-        const valFirstName = new NameValidator(userData.first_name);
-        const valLastName = new NameValidator(userData.last_name);
-        const valIsAdmin = new BooleanValidator(userData.is_admin);     
-
-        userData.password = await this.hashPassword(userData.password);
-        const client = await this.repository.connect();
+        const client = await this.repository.connect();     
         try {
+            const valEmail = new EmailValidator(userData.email);
+            const valPwd = new PasswordValidator(userData.password);
+            const valUserName = new StringValidator(userData.username);
+            const valFirstName = new NameValidator(userData.first_name);
+            const valLastName = new NameValidator(userData.last_name);
+            const valIsAdmin = new BooleanValidator(userData.is_admin);
+            userData.password = await this.hashPassword(userData.password);
             const createdUser = await this.repository.createUser(client, userId, userData);
             this.repository.release(client);
             return createdUser;

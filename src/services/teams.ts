@@ -1,6 +1,7 @@
 import { Services } from './service';
 import { PatchData, TeamData } from '../models';
 import { NameValidator, UUIDValidator } from '../validator/string';
+import { BooleanValidator } from '../validator';
 
 export class TeamServices extends Services {    
     public async getAllTeams()
@@ -69,16 +70,19 @@ export class TeamServices extends Services {
     {
         const client = await this.repository.connect();
         try {
-            // this.repository.begin(client);
             const is_admin = userType
             if (is_admin) {
+                this.repository.begin(client);
+                const valLeaderId = new UUIDValidator(teamData.leader);
+                const valNameId = new NameValidator(teamData.name);
+                const findUser = await this.repository.getUserById(client, teamData.leader);
                 const newTeamData = await this.repository.createTeamQuery(client, teamId, teamData);
+                this.repository.commit(client);
                 this.repository.release(client);
                 return newTeamData
             } else {
                 throw new Error(`Apenas Usuários Administradores podem criar Equipes!`)
             }
-            // this.repository.commit(client);
         } catch (error) {
             this.repository.release(client);
             let message
@@ -87,20 +91,33 @@ export class TeamServices extends Services {
         }
     }
 
-    public async addNewTeamMember(userType: boolean, team_id: string, user_id: string)
+    public async addNewTeamMember(leader_id: string, userType: boolean, team_id: string, user_id: string)
     {
         const client = await this.repository.connect();
         try {
-            // this.repository.begin(client);
+            const valAdmin = new BooleanValidator(userType);
+            const valTeamId = new UUIDValidator(team_id);
+            const valUserId = new UUIDValidator(user_id);
+            const valLeaderId = new UUIDValidator(leader_id);
             const is_admin = userType
-            if (is_admin) {
-                const teamMemberAddedData = await this.repository.addNewTeamMemberQuery(client, team_id, user_id);
-                this.repository.release(client);
-                return teamMemberAddedData
-            } else {
-                throw new Error(`Erro: usuário não adicionado na equipe!`)
+            if (!is_admin) {
+                const teamLeader = await this.getTeamLeader(team_id);
+                if (teamLeader.error === null) {
+                    if (teamLeader.leaderId !== leader_id) {
+                        throw new Error('Não autorizado')
+                    }
+                } else {
+                    throw new Error('Erro ao pesquisar líder');
+                }
             }
-            // this.repository.commit(client);
+            
+            this.repository.begin(client);
+            const findUser = await this.repository.getUserById(client, user_id);
+            const findTeam = await this.repository.getTeamById(client, team_id);
+            const teamMemberAddedData = await this.repository.addNewTeamMemberQuery(client, team_id, user_id);
+            this.repository.commit(client);
+            this.repository.release(client);
+            return teamMemberAddedData
         } catch (error) {
             this.repository.release(client);
             let message

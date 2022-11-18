@@ -113,7 +113,7 @@ export class Repository
                 'userType': res.rows[0].is_admin, 
                 'userEmail': res.rows[0].email, 
                 'userName': res.rows[0].username, 
-                'name': (res.rows[0].first_name+res.rows[0].last_name),
+                'name': `${res.rows[0].first_name} ${res.rows[0].last_name}`,
                 'teamName': res.rows[0].name, 
                 'error': null}
         }
@@ -135,11 +135,15 @@ export class Repository
         }
         const res = await client.query(query)
 
+        if (res.rows.length === 0) {
+            throw new Error('Usuário com esse ID não existe')
+        }
+
         return {'userId': res.rows[0].id,
                 'userType': res.rows[0].is_admin, 
                 'userEmail': res.rows[0].email, 
                 'userName': res.rows[0].username, 
-                'name': (res.rows[0].first_name+res.rows[0].last_name),
+                'name': `${res.rows[0].first_name} ${res.rows[0].last_name}`,
                 'teamName': res.rows[0].name, 
                 'error': null}
     }
@@ -185,6 +189,10 @@ export class Repository
                 'values':[teamId]
         }
         const res = await client.query(query)
+
+        if (res.rows.length === 0) {
+            throw new Error('Time com esse ID não existe')
+        }
         return {'data': res.rows, 'error': null};
     }
 
