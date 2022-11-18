@@ -13,13 +13,20 @@ export class UserController
         this.userServices = service;
     }
 
-    public async findAllUsers(req: Request, res: Response)
+    public async findAllUsers(req: AuthenticatedUserDataRequest, res: Response)
     {
-        const result = await this.userServices.getAllUsers();
-        if(result.error === null){
-            res.status(200).json(result)
+        const admin = req.userType;
+        if (admin){
+            const result = await this.userServices.getAllUsers();
+            if(result.error === null){
+                res.status(200).json(result)
+            }
+            else{
+                res.status(result.status).json({message: result.error});
+            }
+        } else {
+            res.status(401).json({message: 'Não autorizado'});
         }
-        else{res.status(result.status).json({message: result.error});}
     }
 
     public async findMyUser(req: AuthenticatedUserDataRequest, res: Response)
@@ -34,12 +41,29 @@ export class UserController
 
     public async findUser(req: AuthenticatedUserDataRequest, res: Response)
     {
-        const {userId} = req
-        const result = await this.userServices.getUserById(userId);
-        if(result.error === null){
-            res.status(200).json(result)
-        }
-        else{res.status(result.status).json({message: result.error});}
+        const admin = req.userType;
+        let isLeader = false;
+        const userId = req.userId;
+        const user_id = req.params.user_id;
+
+        const leader = await this.userServices.getTeamLeader(userId);
+        if(leader.error === null){
+            if (leader.leaderId){
+                isLeader = true;
+            }
+        }        
+
+        if (admin || isLeader){
+            const result = await this.userServices.getUserById(user_id);
+            if(result.error === null){
+                res.status(200).json(result)
+            }else{
+                res.status(result.status).json({message: result.error});
+            }
+        }else{
+            res.status(401).json({message: 'Não autorizado'});
+
+        }    
     }
 
     public async createUser(req: Request, res: Response)
@@ -49,7 +73,6 @@ export class UserController
         const result = await this.userServices.create(userId, userData);
 
         if (result.error === null) {
-            console.log(result.userType);
             const { userId, userType, userEmail, userName } = result;
             const alreadyHasToken = req.cookies.token;
             if (alreadyHasToken) { res.clearCookie('token'); };

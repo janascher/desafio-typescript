@@ -10,7 +10,7 @@ const repository = new Repository();
 const userServices = new UserServices(repository, 'usuario');
 const userController = new UserController(userServices);
 
-router.get('/', authenticate, (req, res) => userController.findAllUsers(req, res));
+router.get('/', authenticate, (req, res) => userController.findAllUsers(req as AuthenticatedUserDataRequest, res));
 router.get('/me', authenticate, (req, res) => userController.findMyUser(req as AuthenticatedUserDataRequest, res));
 router.get('/:user_id', authenticate, (req, res) => userController.findUser(req as AuthenticatedUserDataRequest, res));
 
