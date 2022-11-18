@@ -49,6 +49,21 @@ export class TeamServices extends Services {
         }
     }    
 
+    public async getMember(userId : string, teamId : string)
+    {
+        const client = await this.repository.connect(); 
+        try {
+            const teamMember = await this.repository.getMember(client, userId, teamId);
+            this.repository.release(client);
+            return teamMember;
+        } catch (error) {
+            this.repository.release(client);
+            let message
+            if (error instanceof Error) message = error.message
+            return {'status': 500, 'error': message || 'Erro buscando membro do time'}
+        }
+    } 
+
     public async deleteTeamMember(userId : string, teamId : string)
     {
         const client = await this.repository.connect(); 

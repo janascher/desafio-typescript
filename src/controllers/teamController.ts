@@ -34,13 +34,37 @@ export class TeamController
     public async findTeam(req: AuthenticatedUserDataRequest, res: Response)
     {
         const teamId = req.params.team_id;
-        const result = await this.teamServices.getTeam(teamId);
-        if(result.error === null){
-            res.status(200).json(result)
+        const userType = req.userType;
+        const userId = req.userId;
+        let isLeader = false;
+        let isMember = false;
+        const leader = await this.teamServices.getTeamLeader(teamId);
+        if(leader.error === null){
+            if (leader.leaderId){
+                if (leader.leaderId===userId){
+                    isLeader = true;
+                }
+            }
         }
-        else{
-            res.status(result.status).json({message: result.error})
+        const member = await this.teamServices.getMember(userId, teamId);
+        if(member.error === null){
+            if (member.memberId){
+                if (member.memberId===userId){
+                    isMember = true;
+                }
+            }
         }
+        if (userType || isLeader || isMember){
+            const result = await this.teamServices.getTeam(teamId);
+            if(result.error === null){
+                res.status(200).json(result)
+            }
+            else{
+                res.status(result.status).json({message: result.error})
+            }
+        }else{
+            res.status(401).json({message: 'Usuário não tem autorização.'})
+        }    
     }
 
     public async createTeam(req: AuthenticatedUserDataRequest, res: Response)

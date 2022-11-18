@@ -232,6 +232,20 @@ export class Repository
         return {'error': null};
     }
 
+    public async getMember(client: PoolClient, userId: string, teamId: string)
+    {
+        const query = {
+                'text':`
+                    SELECT id
+                    FROM usuario
+                    WHERE id = $1 and squad = $2 
+                `,
+                'values':[userId, teamId]
+        }
+        const res = await client.query(query)
+        return {memberId: res.rows[0].id, 'error': null};
+    }
+
     public async createTeamQuery(client: PoolClient, teamId: string, teamData: TeamData)
     {
         const query = {
