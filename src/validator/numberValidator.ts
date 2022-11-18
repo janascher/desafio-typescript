@@ -5,7 +5,7 @@ export class NumberValidator extends Validator {
         if (typeof data === 'number') {
             super(data);
         } else {
-            throw new Error('O tipo está errado');
+            throw new Error('O tipo number está errado');
         }
     }
 }

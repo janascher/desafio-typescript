@@ -1,6 +1,13 @@
 import { Repository } from "../repositories/index";
 import { UserData } from "../models";
 import bcrypt from 'bcrypt';
+import { EmailValidator } from "../validator/string/emailValidator";
+import { PasswordValidator } from "../validator/string/passwordValidator";
+import { NameValidator } from "../validator/string/nameValidator";
+import { StringValidator } from "../validator/stringValidator";
+import { BooleanValidator } from "../validator/booleanValidator";
+import { UUIDValidator } from "../validator/string/uuidValidator";
+
 
 export class UserServices {
     private repository : Repository;
@@ -51,6 +58,16 @@ export class UserServices {
 
     public async create(userId: string, userData : UserData )
     {
+        const valEmail = new EmailValidator(userData.email);
+        const valPwd = new PasswordValidator(userData.password);
+        const valUserName = new StringValidator(userData.username);
+        const valFirstName = new NameValidator(userData.first_name);
+        const valLastName = new NameValidator(userData.last_name);
+        const valIsAdmin = new BooleanValidator(userData.is_admin);
+        if (userData.squad!==null){
+            const valSquad = new UUIDValidator(userData.squad);
+        }     
+
         userData.password = await this.hashPassword(userData.password);
         const client = await this.repository.connect();
         try {
@@ -60,11 +77,26 @@ export class UserServices {
             this.repository.release(client);
             return createdUser;
         } catch (error) {
-            console.log(error)
             this.repository.release(client);
-            return {'status': 500, 'error': 'erro criando usuário'};
+            let message
+            if (error instanceof Error) message = error.message
+            else message = String(error)
+            return {'status': 400, 'error': message}            
         }
     } 
+
+    public async removeUser(userId: string) {
+        const client = await this.repository.connect();
+        
+        try {
+            const deleteUser = await this.repository.deleteUser(client, userId);
+            this.repository.release(client);
+            return deleteUser;
+        } catch (error) {
+            this.repository.release(client);
+            return {'status': 500, 'error': 'erro deletando usuário'};
+        }
+    }
 
     private async hashPassword(plaintextPassword : string) {
         const hash = await bcrypt.hash(plaintextPassword, 10);

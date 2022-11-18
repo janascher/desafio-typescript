@@ -9,7 +9,7 @@ export class PasswordValidator extends RegexValidator {
         if (result === true) {
             console.log(`A senha ${data} está correta.`);
         } else {
-            throw new Error('O formato está errado');
+            throw new Error('O formato da senha está errada');
         }
     }
 }

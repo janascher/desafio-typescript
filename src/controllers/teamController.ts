@@ -33,7 +33,14 @@ export class TeamController
 
     public async findTeam(req: Request, res: Response)
     {
-
+        const teamId = req.params.team_id;
+        const result = await this.teamServices.getTeam(teamId);
+        if(result.error === null){
+            res.status(200).json(result)
+        }
+        else{
+            res.status(result.status).json({message: result.error})
+        }
     }
 
     public async createTeam(req: AuthenticatedUserDataRequest, res: Response)
