@@ -17,22 +17,22 @@ Desafio final do módulo **Typescript**, em grupos de 5 pessoas, onde cada integ
 ## 📌 Regras do grupo
 
 ### Sobre as atividades:
-1 - Atualizar a versão atual com a remota;
-2 - Criar ou voltar para branch;
-3 - Adicionar e escolher uma atividade no Trello;
-4 - Ao concluir uma atividade, abrir uma PR (pull request);
-5 - Após atualizar na branch main, marcar a atividade como concluída no Trello.
+- Atualizar a versão atual com a remota;
+- Criar ou voltar para branch;
+- Adicionar e escolher uma atividade no Trello;
+- Ao concluir uma atividade, abrir uma PR (pull request);
+- Após atualizar na branch main, marcar a atividade como concluída no Trello.
 
 ### Sobre Pull Request (PR):
-1 - É proibido realizar commits e push na branch main;
-2 - Ir para branch main, realizar fetch e merge com a  origin/main;
-3 - Retornar a sua topic branch e realizar merge com a main. **Observação: resolver os conflitos caso exista**;
-4 - Fazer push com repositório remoto;
-5 - Abrir a PR e solicitar via Whatsapp para que os demais possam revisar;
-6 - Pelo menos um revisor deve aprovar ou solicitar explicitamente quais correções devem ser feitas;
-7 - Somente após todas as correções terem sido realizadas e, pelo menos um revisor ter aprovado, que o dono da PR pode realizar o merge na main.
+1. É proibido realizar commits e push na branch main;
+2. Ir para branch main, realizar fetch e merge com a  origin/main;
+3. Retornar a sua topic branch e realizar merge com a main. **Observação: resolver os conflitos caso exista**;
+4. Fazer push com repositório remoto;
+5. Abrir a PR e solicitar via Whatsapp para que os demais possam revisar;
+6. Pelo menos um revisor deve aprovar ou solicitar explicitamente quais correções devem ser feitas;
+7. Somente após todas as correções terem sido realizadas e, pelo menos um revisor ter aprovado, que o dono da PR pode realizar o merge na main.
 **Observação: caso na hora de realizar o merge o GitHub acusar algum conflito, a PR deve ir para o estado de draft e retomar para o passo 2**;
-8 - Após concluir uma PR, fica ao critério da pessoa em apagar ou não a topic branch.
+8. Após concluir uma PR, fica ao critério da pessoa em apagar ou não a topic branch.
 
 ## ✨ Requisitos do projeto
 
@@ -80,13 +80,20 @@ Desafio final do módulo **Typescript**, em grupos de 5 pessoas, onde cada integ
 
 As seguintes ferramentas foram usadas na construção do projeto:
 
-- **[TypeScript](https://www.typescriptlang.org/)**
-- **[PostgreSQL](https://www.postgresql.org/)**
-- **[npm](https://www.npmjs.com/)**
+- **[Bcrypt](https://github.com/kelektiv/node.bcrypt.js#readme)**
+- **[Cookie-parser](https://github.com/expressjs/cookie-parser#readme)**
+- **[Dotenv](https://github.com/motdotla/dotenv)**
+- **[Express](http://expressjs.com/)**
+- **[JWT](https://jwt.io/)**
+- **[NPM](https://www.npmjs.com/)**
 - **[Node.js](https://nodejs.org/en/)**
-- **[WhatsApp](https://www.whatsapp.com/?lang=pt_br)**
+- **[Nodemon](https://github.com/remy/nodemon)**
+- **[PostgreSQL](https://www.postgresql.org/)**
+- **[TypeScript](https://www.typescriptlang.org/)**
+- **[UUID](https://github.com/uuidjs/uuid#readme)**
 - **[Discord](https://discord.com/)**
 - **[Trello](https://trello.com/pt-BR)**
+- **[WhatsApp](https://www.whatsapp.com/?lang=pt_br)**
 
 ## 🤝 Contribuidores
 
