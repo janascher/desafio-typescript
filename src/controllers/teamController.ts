@@ -83,9 +83,9 @@ export class TeamController
 
     public async addTeamMember(req: AuthenticatedUserDataRequest, res: Response)
     {
-        const { userType } = req;
+        const { userId, userType } = req;
         const { team_id, user_id } = req.params;
-        const result = await this.teamServices.addNewTeamMember(userType, team_id, user_id);
+        const result = await this.teamServices.addNewTeamMember(userId, userType, team_id, user_id);
 
         if (result.error === null) {
             res.status(200).json(result)
