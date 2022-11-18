@@ -43,23 +43,31 @@ export class TeamController
         }
     }
 
-    public async createTeam(req: Request, res: Response)
+    public async createTeam(req: AuthenticatedUserDataRequest, res: Response)
     {
-        const { userType } = req as any;
+        const { userType } = req;
         const teamId : string = uuid();
         const teamData : TeamData = req.body;
         const result = await this.teamServices.createNewTeam(userType, teamId, teamData);
 
         if (result.error === null) {
-            res.status(200).json({ result });
+            res.status(200).json(result);
         } else {
             res.status(result.status).json({message: result.error});
         }
     }
 
-    public async addTeamMember(req: Request, res: Response)
+    public async addTeamMember(req: AuthenticatedUserDataRequest, res: Response)
     {
-        const result = await this.teamServices.addNewTeamMember();
+        const { userType } = req;
+        const { team_id, user_id } = req.params;
+        const result = await this.teamServices.addNewTeamMember(userType, team_id, user_id);
+
+        if (result.error === null) {
+            res.status(200).json(result)
+        } else {
+            res.status(result.status).json({message: result.error});
+        }
     }
 
     public async updateTeam(req: Request, res: Response)

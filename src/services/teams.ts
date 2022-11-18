@@ -38,7 +38,7 @@ export class TeamServices {
 
     
 
-    public async createNewTeam(userType: string, teamId: string, teamData: TeamData)
+    public async createNewTeam(userType: boolean, teamId: string, teamData: TeamData)
     {
         const client = await this.repository.connect();
         try {
@@ -58,16 +58,23 @@ export class TeamServices {
         }
     }
 
-    public async addNewTeamMember()
+    public async addNewTeamMember(userType: boolean, team_id: string, user_id: string)
     {
         const client = await this.repository.connect();
         try {
             // this.repository.begin(client);
-            const teamMemberAddedData = await this.repository.addNewTeamMemberQuery(client);
+            const is_admin = userType
+            if (is_admin) {
+                const teamMemberAddedData = await this.repository.addNewTeamMemberQuery(client, team_id, user_id);
+                this.repository.release(client);
+                return teamMemberAddedData
+            } else {
+                throw new Error(`Erro: usuário não adicionado na equipe!`)
+            }
             // this.repository.commit(client);
-            this.repository.release(client);
         } catch (error) {
             this.repository.release(client);
+            return {'status': 500, 'error': error};
         }
     }
 

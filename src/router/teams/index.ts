@@ -13,8 +13,8 @@ const teamController = new TeamController(teamServices);
 router.get('/', authenticate, (req, res) => teamController.findAllTeams(req as AuthenticatedUserDataRequest, res));
 router.get('/:team_id', authenticate, (req, res) => teamController.findTeam(req, res));
 
-router.post('/', authenticate, (req, res) => teamController.createTeam(req, res));
-router.post('/:team_id/member/:user_id', authenticate, (req, res) => teamController.addTeamMember(req, res));
+router.post('/', authenticate, (req, res) => teamController.createTeam(req as AuthenticatedUserDataRequest, res));
+router.post('/:team_id/member/:user_id', authenticate, (req, res) => teamController.addTeamMember(req as AuthenticatedUserDataRequest, res));
 
 router.patch('/:team_id', authenticate, (req, res) => teamController.updateTeam(req, res));
 

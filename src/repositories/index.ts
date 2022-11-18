@@ -198,6 +198,17 @@ export class Repository
 
         return {'teamId': res.rows[0].id, 'teamName': res.rows[0].name, 'teamLeader': res.rows[0].leader, 'error': null}
     }
+    
+    public async addNewTeamMemberQuery(client: PoolClient, team_id: string, user_id: string)
+    {
+        const query = {
+            'text':`UPDATE usuario SET squad = $1 WHERE id = $2 RETURNING username`,
+            'values':[team_id, user_id]
+        }
+        const res = await client.query(query)
+
+        return {'user_name': res.rows[0].username, 'error': null}
+    }
 
     public async deleteUser(client: PoolClient, userId : string){
         const query = {
@@ -212,16 +223,5 @@ export class Repository
         const res = await client.query(query);
 
         return {'userId': res.rows[0].id, 'userType': res.rows[0].is_admin, 'userEmail': res.rows[0].email, 'userName': res.rows[0].username, 'error': null};
-    }
-
-    public async addNewTeamMemberQuery(client: PoolClient)
-    {
-        const query = {
-            'text':``,
-            'values':[]
-        }
-        const res = await client.query(query)
-
-        return {}
     }
 }
