@@ -60,7 +60,7 @@ export class Repository
     public async login(client : PoolClient, _email : string)
     {
         const query = {
-            'text':'SELECT id, email, password, username, is_admin FROM usuario WHERE email = $1',
+            'text':'SELECT id, email, password, username, is_admin FROM usuario WHERE deleted_at is null and email = $1',
             'values':[_email]
         }
 

@@ -5,7 +5,7 @@ export class BooleanValidator extends Validator {
         if (typeof data === 'boolean') {
             super(data);
         } else {
-            throw new Error('O tipo está errado');
+            throw new Error('O tipo booleano está errado');
         }
     }
 }
