@@ -9,14 +9,14 @@ export class UserServices extends Services {
     {
         const client = await this.repository.connect();
         try {
-            // this.repository.begin(client);
             const findUser = await this.repository.getAllUsers(client);
-            // this.repository.commit(client);
             this.repository.release(client);
             return findUser
         } catch (error) {
             this.repository.release(client);
-            return {'status': 500, 'error': 'erro buscando usuários'};
+            let message
+            if (error instanceof Error) message = error.message
+            return {'status': 500, 'error': message || 'Erro buscando todos os usuários'}
         }
     } 
 
@@ -28,7 +28,9 @@ export class UserServices extends Services {
             return getMyUser;
         } catch (error) {
             this.repository.release(client);
-            return {'status': 500, 'error': 'erro buscando usuário'};
+            let message
+            if (error instanceof Error) message = error.message
+            return {'status': 500, 'error': message || 'Erro buscando meu usuário'}
         }
     }
 
@@ -40,7 +42,9 @@ export class UserServices extends Services {
             return getUserById;
         } catch (error) {
             this.repository.release(client);
-            return {'status': 500, 'error': 'erro buscando usuário'};
+            let message
+            if (error instanceof Error) message = error.message
+            return {'status': 500, 'error': message || 'Erro buscando usuário pelo ID'}
         }
     }
 
@@ -56,17 +60,14 @@ export class UserServices extends Services {
         userData.password = await this.hashPassword(userData.password);
         const client = await this.repository.connect();
         try {
-            // this.repository.begin(client);
             const createdUser = await this.repository.createUser(client, userId, userData);
-            // this.repository.commit(client);
             this.repository.release(client);
             return createdUser;
         } catch (error) {
             this.repository.release(client);
             let message
             if (error instanceof Error) message = error.message
-            else message = String(error)
-            return {'status': 400, 'error': message}            
+            return {'status': 400, 'error': message || 'Erro ao tentar criar usuário'}            
         }
     }
     
@@ -126,7 +127,9 @@ export class UserServices extends Services {
             return { 'error': null }
         } catch (error) {
             this.repository.release(client);
-            return {'status': 500, 'error': 'Erro ao atualizar usuário'}
+            let message
+            if (error instanceof Error) message = error.message
+            return {'status': 500, 'error': message || 'Erro ao atualizar usuário'}
         }
     }
 
@@ -139,7 +142,9 @@ export class UserServices extends Services {
             return deleteUser;
         } catch (error) {
             this.repository.release(client);
-            return {'status': 500, 'error': 'erro deletando usuário'};
+            let message
+            if (error instanceof Error) message = error.message
+            return {'status': 500, 'error': message || 'Erro deletando usuário'}
         }
     }
 

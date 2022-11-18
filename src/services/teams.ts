@@ -12,7 +12,9 @@ export class TeamServices extends Services {
             return getTeams;
         } catch (error) {
             this.repository.release(client);
-            return {'status': 500, 'error': 'erro buscando Teams'};
+            let message
+            if (error instanceof Error) message = error.message
+            return {'status': 500, 'error': message || 'Erro buscando times'}
         }
 
     } 
@@ -26,7 +28,9 @@ export class TeamServices extends Services {
             return getTeam;
         } catch (error) {
             this.repository.release(client);
-            return {'status': 500, 'error': 'erro buscando Team'};
+            let message
+            if (error instanceof Error) message = error.message
+            return {'status': 500, 'error': message || 'Erro buscando time pelo ID'}
         }
     } 
 
@@ -39,7 +43,9 @@ export class TeamServices extends Services {
             return teamLeader;
         } catch (error) {
             this.repository.release(client);
-            return {'status': 500, 'error': 'erro buscando Team Leader'};
+            let message
+            if (error instanceof Error) message = error.message
+            return {'status': 500, 'error': message || 'Erro buscando líder do time'}
         }
     }    
 
@@ -52,7 +58,9 @@ export class TeamServices extends Services {
             return delMember;
         } catch (error) {
             this.repository.release(client);
-            return {'status': 500, 'error': 'erro excluindo Member'};
+            let message
+            if (error instanceof Error) message = error.message
+            return {'status': 500, 'error': message || 'Erro excluindo membro do time'}
         }
     }    
 
@@ -73,7 +81,9 @@ export class TeamServices extends Services {
             // this.repository.commit(client);
         } catch (error) {
             this.repository.release(client);
-            return {'status': 500, 'error': error};
+            let message
+            if (error instanceof Error) message = error.message
+            return {'status': 500, 'error': message || 'Erro ao tentar criar novo time'}
         }
     }
 
@@ -93,7 +103,9 @@ export class TeamServices extends Services {
             // this.repository.commit(client);
         } catch (error) {
             this.repository.release(client);
-            return {'status': 500, 'error': error};
+            let message
+            if (error instanceof Error) message = error.message
+            return {'status': 500, 'error': message || 'Erro ao tentar adicionar membro ao time'}
         }
     }
 
@@ -133,7 +145,9 @@ export class TeamServices extends Services {
             return { 'error': null }
         } catch (error) {
             this.repository.release(client);
-            return {'status': 500, 'error': 'Erro ao atualizar time'}
+            let message
+            if (error instanceof Error) message = error.message
+            return {'status': 500, 'error': message || 'Erro ao atualizar time'}
         }
     }
 }

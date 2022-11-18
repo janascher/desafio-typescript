@@ -31,7 +31,7 @@ export class TeamController
         }
     }   
 
-    public async findTeam(req: Request, res: Response)
+    public async findTeam(req: AuthenticatedUserDataRequest, res: Response)
     {
         const teamId = req.params.team_id;
         const result = await this.teamServices.getTeam(teamId);
@@ -96,7 +96,7 @@ export class TeamController
         }
     }
 
-    public async deleteTeam(req: Request, res: Response)
+    public async deleteTeam(req: AuthenticatedUserDataRequest, res: Response)
     {
 
     }
