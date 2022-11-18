@@ -36,7 +36,32 @@ export class TeamServices {
         }
     } 
 
-    
+    public async getTeamLeader(teamId : string)
+    {
+        const client = await this.repository.connect(); 
+        try {
+            const teamLeader = await this.repository.getTeamLeader(client, teamId);
+            this.repository.release(client);
+            return teamLeader;
+        } catch (error) {
+            this.repository.release(client);
+            return {'status': 500, 'error': 'erro buscando Team Leader'};
+        }
+    }    
+
+    public async deleteTeamMember(userId : string, teamId : string)
+    {
+        const client = await this.repository.connect(); 
+        try {
+            const delMember = await this.repository.deleteTeamMember(client, userId, teamId);
+            this.repository.release(client);
+            return delMember;
+        } catch (error) {
+            this.repository.release(client);
+            return {'status': 500, 'error': 'erro excluindo Member'};
+        }
+    }    
+
 
     public async createNewTeam(userType: string, teamId: string, teamData: TeamData)
     {

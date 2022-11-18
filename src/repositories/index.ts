@@ -188,6 +188,35 @@ export class Repository
         return {'data': res.rows, 'error': null};
     }
 
+    public async getTeamLeader(client: PoolClient, teamId: string)
+    {
+        const query = {
+                'text':`
+                    SELECT a.leader, b.username
+                    FROM equipe a
+                        LEFT JOIN usuario b on b.id = a.leader and b.deleted_at is null
+                    WHERE a.deleted_at is null  and a.id = $1              
+                `,
+                'values':[teamId]
+        }
+        const res = await client.query(query)
+        return {leaderId: res.rows[0].leader, leaderName: res.rows[0].username, 'error': null};
+    }
+
+    public async deleteTeamMember(client: PoolClient, userId: string, teamId : string)
+    {
+        const query = {
+                'text':`
+                    UPDATE usuario
+                            SET squad = null
+                    WHERE id = $1 and squad = $2 
+                `,
+                'values':[userId, teamId]
+        }
+        const res = await client.query(query)
+        return {'error': null};
+    }
+
     public async createTeamQuery(client: PoolClient, teamId: string, teamData: TeamData)
     {
         const query = {
@@ -204,7 +233,7 @@ export class Repository
             'text':`
                 UPDATE usuario SET
                     deleted_at = now()
-                WHERE id = $1  RETURNING id
+                WHERE id = $1 RETURNING id
             `,
             'values': [userId]
         }
