@@ -340,11 +340,11 @@ export class Repository
     public async patch(client: PoolClient, tableName : string, updateData : UpdateQuery)
     {
         const query = {
-            'text':`UPDATE ${tableName} SET (${updateData.columns}) = (${updateData.references}) WHERE id = $1`,
+            'text':`UPDATE ${tableName} SET (${updateData.columns}) = (${updateData.references}) WHERE id = $1 RETURNING id`,
             'values': updateData.values
         }
 
         const res = await client.query(query)
-        return {'error': null}
+        return {'id': res.rows[0].id, 'error': null}
     }
 }

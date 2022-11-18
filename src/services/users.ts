@@ -148,12 +148,16 @@ export class UserServices extends Services
                 values
             }
 
+            await this.repository.begin(client)
             const updatedUser = await this.repository.patch(client, this.tableName, updateData)
+            const getUserById = await this.repository.getUserById(client, updatedUser.id)
+            await this.repository.commit(client)
             this.repository.release(client)
-            return { 'error': null }
+            return getUserById
         }
         catch (error)
         {
+            await this.repository.rollback(client)
             this.repository.release(client)
             let message
             if (error instanceof Error) message = error.message
