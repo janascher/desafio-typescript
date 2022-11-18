@@ -70,9 +70,30 @@ export class TeamController
         }
     }
 
-    public async updateTeam(req: Request, res: Response)
+    public async updateTeam(req: AuthenticatedUserDataRequest, res: Response)
     {
+        const teamId = req.params.team_id
+        const {userType, userId} = req
+        if (!userType) {
+            const leader = await this.teamServices.getTeamLeader(teamId)
+            if (leader.error === null) {
+                if (leader.leaderId !== userId) {
+                    return res.status(401).json({message: 'Não autorizado'})
+                }
+            } else {
+                return res.status(leader.status).json({message: leader.error})
+            }
+        }
 
+        const id = teamId;
+        const data : Partial<TeamData> = req.body;
+        const result = await this.teamServices.update({id, data})
+
+        if (result.error === null) {
+            res.status(200).json({message: 'Time atualizado com sucesso!'})
+        } else {
+            res.status(result.status).json({message: result.error})
+        }
     }
 
     public async deleteTeam(req: Request, res: Response)

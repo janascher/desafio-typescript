@@ -2,6 +2,7 @@ import { PoolClient } from 'pg';
 import pool from '../config/db';
 import { UserData } from '../models/';
 import { TeamData } from '../models';
+import { UpdateQuery } from '../models/interfaces';
 
 export class Repository
 {
@@ -81,7 +82,7 @@ export class Repository
                             squad,
                             is_admin)
                         values 
-                        ($1, $2, $3, $4, $5, $6, $7, $8::bool) RETURNING id, username, email, is_admin
+                        ($1, $2, $3, $4, $5, $6, null, $7::bool) RETURNING id, username, email, is_admin
                     `,
             'values':[  userId, 
                         userData.username,
@@ -89,7 +90,6 @@ export class Repository
                         userData.last_name,
                         userData.email,
                         userData.password,
-                        userData.squad,
                         userData.is_admin ]
         }
         const res = await client.query(query);
@@ -252,5 +252,31 @@ export class Repository
         const res = await client.query(query);
 
         return {'userId': res.rows[0].id, 'userType': res.rows[0].is_admin, 'userEmail': res.rows[0].email, 'userName': res.rows[0].username, 'error': null};
+    }
+
+    public async patch(client: PoolClient, tableName : string, updateData : UpdateQuery)
+    {
+        const query = {
+            'text':`UPDATE ${tableName} SET (${updateData.columns}) = (${updateData.references}) WHERE id = $1`,
+            'values': updateData.values
+        }
+        const res = await client.query(query)
+
+        return {'error': null};
+    }
+
+    public async getTeamLeader(client: PoolClient, teamId: string)
+    {
+        const query = {
+                'text':`
+                    SELECT a.leader, b.username
+                    FROM equipe a
+                        LEFT JOIN usuario b on b.id = a.leader and b.deleted_at is null
+                    WHERE a.deleted_at is null  and a.id = $1              
+                `,
+                'values':[teamId]
+        }
+        const res = await client.query(query)
+        return {leaderId: res.rows[0].leader, leaderName: res.rows[0].username, 'error': null};
     }
 }

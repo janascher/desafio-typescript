@@ -11,7 +11,6 @@ export interface UserData{
     last_name: string,
     email: string,
     password: string,
-    squad: string,
     is_admin: boolean
 }
 
@@ -20,13 +19,20 @@ export interface TeamData{
     leader: string
 }
 
-export interface AuthenticatedUserRequest extends Request{
-    userId: string
-}
-
 export interface AuthenticatedUserDataRequest extends Request{
     userId: string,
     userType: boolean,
     userEmail: string,
     userName: string
+}
+
+export interface PatchData<T> {
+    id: string,
+    data: Partial<T>
+}
+
+export interface UpdateQuery {
+    columns: string,
+    references: string,
+    values: any[]
 }
