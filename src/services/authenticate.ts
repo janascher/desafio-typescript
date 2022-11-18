@@ -24,8 +24,7 @@ export class AuthServices extends Services {
             this.repository.release(client);
             let message
             if (error instanceof Error) message = error.message
-            else message = String(error)
-            return {'status': 400, 'error': message}            
+            return {'status': 500, 'error': message || 'Erro ao fazer login'}            
         }
     } 
      
