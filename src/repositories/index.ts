@@ -199,6 +199,21 @@ export class Repository
         return {'teamId': res.rows[0].id, 'teamName': res.rows[0].name, 'teamLeader': res.rows[0].leader, 'error': null}
     }
 
+    public async deleteUser(client: PoolClient, userId : string){
+        const query = {
+            'text':`
+                UPDATE usuario SET
+                    deleted_at = now()
+                WHERE id = $1  RETURNING id
+            `,
+            'values': [userId]
+        }
+
+        const res = await client.query(query);
+
+        return {'userId': res.rows[0].id, 'userType': res.rows[0].is_admin, 'userEmail': res.rows[0].email, 'userName': res.rows[0].username, 'error': null};
+    }
+
     public async addNewTeamMemberQuery(client: PoolClient)
     {
         const query = {
