@@ -1,22 +1,10 @@
-import { Repository } from "../repositories/index";
-import { UserData } from "../models";
+import { Services } from "./service";
+import { UserData, PatchData } from "../models";
 import bcrypt from 'bcrypt';
-import { EmailValidator } from "../validator/string/emailValidator";
-import { PasswordValidator } from "../validator/string/passwordValidator";
-import { NameValidator } from "../validator/string/nameValidator";
-import { StringValidator } from "../validator/stringValidator";
-import { BooleanValidator } from "../validator/booleanValidator";
-import { UUIDValidator } from "../validator/string/uuidValidator";
+import { EmailValidator, NameValidator, PasswordValidator } from "../validator/string";
+import { BooleanValidator, StringValidator } from "../validator";
 
-
-export class UserServices {
-    private repository : Repository;
-
-    constructor(repo : Repository)
-    {
-        this.repository = repo;
-    }
-
+export class UserServices extends Services {
     public async getAllUsers()
     {
         const client = await this.repository.connect();
@@ -63,10 +51,7 @@ export class UserServices {
         const valUserName = new StringValidator(userData.username);
         const valFirstName = new NameValidator(userData.first_name);
         const valLastName = new NameValidator(userData.last_name);
-        const valIsAdmin = new BooleanValidator(userData.is_admin);
-        if (userData.squad!==null){
-            const valSquad = new UUIDValidator(userData.squad);
-        }     
+        const valIsAdmin = new BooleanValidator(userData.is_admin);     
 
         userData.password = await this.hashPassword(userData.password);
         const client = await this.repository.connect();
@@ -83,7 +68,67 @@ export class UserServices {
             else message = String(error)
             return {'status': 400, 'error': message}            
         }
-    } 
+    }
+    
+    public async update(param: PatchData<UserData>)
+    {
+        const client = await this.repository.connect();
+        try {
+            const columnsArray = ['updated_at']
+            const values : any[] = [param.id, 'now()']
+
+            if (param.data.email) {
+                const valEmail = new EmailValidator(param.data.email)
+                columnsArray.push('email')
+                values.push(param.data.email)
+            }
+            if (param.data.first_name) {
+                const valName = new NameValidator(param.data.first_name)
+                columnsArray.push('first_name')
+                values.push(param.data.first_name)
+            }
+            if (param.data.last_name) {
+                const valName = new NameValidator(param.data.last_name)
+                columnsArray.push('last_name')
+                values.push(param.data.last_name)
+            }
+            if (param.data.is_admin) {
+                const valAdmin = new BooleanValidator(param.data.is_admin)
+                columnsArray.push('is_admin')
+                values.push(param.data.is_admin)
+            }
+            if (param.data.password) {
+                const valPwd = new PasswordValidator(param.data.password)
+                columnsArray.push('password')
+                values.push(this.hashPassword(param.data.password))
+            }
+            if (param.data.username) {
+                const valUserName = new NameValidator(param.data.username)
+                columnsArray.push('username')
+                values.push(param.data.username)
+            }
+
+            let columns = `${columnsArray[0]}`
+            let references = `$2`
+            for (let i = 1; i < columnsArray.length; i++) {
+                columns = columns.concat(`, ${columnsArray[i]}`);
+                references = references.concat(`, $${i + 2}`);
+            };
+
+            const updateData  = {
+                columns,
+                references,
+                values
+            }
+
+            const updatedUser = await this.repository.patch(client, this.tableName, updateData)
+            this.repository.release(client);
+            return { 'error': null }
+        } catch (error) {
+            this.repository.release(client);
+            return {'status': 500, 'error': 'Erro ao atualizar usuário'}
+        }
+    }
 
     public async removeUser(userId: string) {
         const client = await this.repository.connect();

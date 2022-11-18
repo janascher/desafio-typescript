@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { v4 as uuid } from 'uuid';
 import { UserServices } from '../services/users';
-import { UserData, AuthenticatedUserRequest, AuthenticatedUserDataRequest } from '../models';
+import { UserData, AuthenticatedUserDataRequest } from '../models';
 import jwt from 'jsonwebtoken';
 
 export class UserController
@@ -32,7 +32,7 @@ export class UserController
         else{res.status(result.status).json({message: result.error});}
     }
 
-    public async findUser(req: AuthenticatedUserRequest, res: Response)
+    public async findUser(req: AuthenticatedUserDataRequest, res: Response)
     {
         const {userId} = req
         const result = await this.userServices.getUserById(userId);
@@ -64,9 +64,23 @@ export class UserController
 
     }
 
-    public updateUser(req: Request, res: Response)
+    public async updateUser(req: AuthenticatedUserDataRequest, res: Response)
     {
+        const idparam = req.params.user_id;
+        const id = req.userId;
+        const data : Partial<UserData> = req.body;
 
+        if (idparam !== id) {
+            return res.status(401).json({message: 'Usuário não autenticado para atualização!'})
+        }
+        
+        const result = await this.userServices.update({id, data})
+
+        if (result.error === null) {
+            res.status(200).json({message: 'Usuário atualizado com sucesso!'})
+        } else {
+            res.status(result.status).json({message: result.error})
+        }
     }
 
     public async deleteUser(req: AuthenticatedUserDataRequest, res: Response)

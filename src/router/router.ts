@@ -8,7 +8,7 @@ import { Repository } from "../repositories";
 
 const router = Router();
 const repository = new Repository();
-const authServices = new AuthServices(repository);
+const authServices = new AuthServices(repository, 'usuario');
 const authController = new AuthController(authServices);
 
 router.post('/login', (req, res) => authController.login(req, res));
