@@ -191,14 +191,14 @@ export class Repository
         return {'teamId': res.rows[0].id, 'teamName': res.rows[0].name, 'teamLeader': res.rows[0].leader, 'error': null}
     }
 
-    public async addNewTeamMemberQuery(client: PoolClient)
+    public async addNewTeamMemberQuery(client: PoolClient, team_id: string, user_id: string)
     {
         const query = {
-            'text':``,
-            'values':[]
+            'text':`UPDATE usuario SET squad = $1 WHERE id = $2 RETURNING username`,
+            'values':[team_id, user_id]
         }
         const res = await client.query(query)
 
-        return {}
+        return {'user_name': res.rows[0].username, 'error': null}
     }
 }
