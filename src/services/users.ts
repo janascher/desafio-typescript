@@ -143,6 +143,19 @@ export class UserServices extends Services {
         }
     }
 
+    public async getTeamLeader(userId : string)
+    {
+        const client = await this.repository.connect(); 
+        try {
+            const teamLeader = await this.repository.getIsTeamLeader(client, userId);
+            this.repository.release(client);
+            return teamLeader;
+        } catch (error) {
+            this.repository.release(client);
+            return {'status': 500, 'error': 'erro buscando Team Leader'};
+        }
+    }
+
     private async hashPassword(plaintextPassword : string) {
         const hash = await bcrypt.hash(plaintextPassword, 10);
         return hash;

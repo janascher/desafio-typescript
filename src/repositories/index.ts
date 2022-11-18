@@ -203,6 +203,21 @@ export class Repository
         return {leaderId: res.rows[0].leader, leaderName: res.rows[0].username, 'error': null};
     }
 
+    public async getIsTeamLeader(client: PoolClient, userId: string)
+    {
+        const query = {
+                'text':`
+                    SELECT a.leader, count(*) as squads
+                        FROM equipe a
+                        WHERE a.deleted_at is null  and a.leader = $1              
+                        GROUP by a.leader
+                `,
+                'values':[userId]
+        }
+        const res = await client.query(query)
+        return {leaderId: res.rows[0].leader, 'error': null};
+    }
+    
     public async deleteTeamMember(client: PoolClient, userId: string, teamId : string)
     {
         const query = {
