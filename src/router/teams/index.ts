@@ -19,6 +19,6 @@ router.post('/:team_id/member/:user_id', authenticate, (req, res) => teamControl
 router.patch('/:team_id', authenticate, (req, res) => teamController.updateTeam(req, res));
 
 router.delete('/:team_id', authenticate, (req, res) => teamController.deleteTeam(req, res));
-router.delete('/:team_id/member/:user_id', authenticate, (req, res) => teamController.deleteTeamMember(req, res));
+router.delete('/:team_id/member/:user_id', authenticate, (req, res) => teamController.deleteTeamMember(req as AuthenticatedUserDataRequest, res));
 
 export default router;

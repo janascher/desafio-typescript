@@ -80,8 +80,42 @@ export class TeamController
 
     }
 
-    public async deleteTeamMember(req: Request, res: Response)
+    public async deleteTeamMember(req: AuthenticatedUserDataRequest, res: Response)
     {
+        const userType = req.userType;
+        const userId = req.params.user_id;
+        const teamId = req.params.team_id;
+        const user = req.userId;
+        if (userType) {
+            const result = await this.teamServices.deleteTeamMember(userId, teamId);
+            if(result.error === null){
+                return res.status(200).json(result)
+            }
+            else{
+                return res.status(result.status).json({message: result.error})
+            }
+        } 
+
+        const leader = await this.teamServices.getTeamLeader(teamId);
+        if(leader.error === null){
+            if (leader.leaderId){
+                if (leader.leaderId===user){
+                    const result = await this.teamServices.deleteTeamMember(userId, teamId);
+                    if(result.error === null){
+                        return res.status(200).json(result)
+                    }
+                    else{
+                        return res.status(result.status).json({message: result.error})
+                    }
+                } else {
+                    res.status(401).json({message: 'Usuário não tem autorização.'})
+                }    
+            } else {
+                res.status(401).json({message: 'Usuário não tem autorização.'})
+            }
+        } else {
+            res.status(leader.status).json({message: leader.error})
+        }
 
     }
-}
+}    
