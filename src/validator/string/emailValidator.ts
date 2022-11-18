@@ -9,7 +9,7 @@ export class EmailValidator extends RegexValidator {
         if (result === true) {
             console.log(`O e-mail ${data} está correto.`);
         } else {
-            throw new Error('O formato está errado');
+            throw new Error('O formato do email está errado');
         }
     }
 }

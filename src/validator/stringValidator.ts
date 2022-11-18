@@ -5,7 +5,7 @@ export class StringValidator extends Validator {
         if (typeof data === 'string') {
             super(data);
         } else {
-            throw new Error('O tipo está errado');
+            throw new Error('O tipo string está errado');
         }
     }
 }
