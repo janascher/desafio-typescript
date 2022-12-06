@@ -1,6 +1,7 @@
 import express from 'express'
 import routes from '../router/router'
 import cookieParser from 'cookie-parser'
+import cors from 'cors'
 
 export class App
 {
@@ -15,6 +16,11 @@ export class App
 
     private middleware()
     {
+        const corsOptions = {
+            "origin" : 'http://localhost:3000',
+            "credentials" : true
+        }
+        this.app.use(cors(corsOptions))
         this.app.use(cookieParser())
         this.app.use(express.urlencoded({ extended: true }))
         this.app.use(express.json())
